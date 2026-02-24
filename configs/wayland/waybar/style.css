@@ -1,0 +1,33 @@
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "DejaVu Sans", "Noto Color Emoji";
+    font-size: 14px;
+    min-height: 0;
+}
+
+window#waybar {
+    background: rgba(0, 0, 0, 0.8);
+    color: #ffffff;
+}
+
+#workspaces button {
+    padding: 0 5px;
+    background: transparent;
+    color: #ffffff;
+    border-bottom: 2px solid transparent;
+}
+
+#workspaces button.focused {
+    background: #285577;
+    border-bottom: 2px solid #ffffff;
+}
+
+#clock, #pulseaudio, #network, #battery, #tray {
+    padding: 0 8px;
+    margin: 0 2px;
+}
+
+#battery.critical {
+    color: #ff5555;
+}
