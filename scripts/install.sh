@@ -55,6 +55,11 @@ if $in_live; then
     exit 1
   fi
 
+  # Enable multilib in live pacman.conf
+  msg "Enabling multilib repository..."
+  sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
+  pacman -Syu --noconfirm
+
   # Prompt for inputs
   read -rp "Hostname [${DEFAULT_HOSTNAME}]: " HOSTNAME
   HOSTNAME=${HOSTNAME:-$DEFAULT_HOSTNAME}
