@@ -3,16 +3,18 @@ set -euo pipefail
 
 # phase1-install.sh
 # Instalación mínima desde live ISO. Ejecutar como root en el entorno live.
-# NOTA: Ajusta DEV_DISK / particiones según tu hardware antes de ejecutar.
+# NOTA: Ajusta valores si tu particionado es diferente.
 
-DEV_DISK="/dev/sda"
-ROOT_PART="${DEV_DISK}1"
-MOUNTPOINT="/mnt"
-LOCALE="es_CO.UTF-8"
-HOSTNAME="archbox"
+# Valores por defecto
+DEFAULT_DEV="/dev/sda"
+DEFAULT_MOUNT="/mnt"
+DEFAULT_LOCALE="es_CO.UTF-8"
+DEFAULT_HOST="archbox"
+DEFAULT_USER="jufedev"
 
-# Mensajes
+# Funciones
 msg(){ printf "\e[1;32m[+]\e[0m %s\n" "$*"; }
+warn(){ printf "\e[1;33m[-]\e[0m %s\n" "$*"; }
 err(){ printf "\e[1;31m[!]\e[0m %s\n" "$*"; }
 
 # Comprobaciones básicas
@@ -26,27 +28,67 @@ if ! command -v pacstrap >/dev/null 2>&1; then
     exit 1
 fi
 
+# Preguntas al usuario (con valores por defecto)
+read -rp "Dispositivo (ej. /dev/sda) [${DEFAULT_DEV}]: " DEV_DISK
+DEV_DISK=${DEV_DISK:-$DEFAULT_DEV}
+
+# Sugerencia de partición root como <disk>1 por defecto
+DEFAULT_ROOT_PART="${DEV_DISK}1"
+read -rp "Partición raíz (ej ${DEFAULT_ROOT_PART}) [${DEFAULT_ROOT_PART}]: " ROOT_PART
+ROOT_PART=${ROOT_PART:-$DEFAULT_ROOT_PART}
+
+read -rp "Punto de montaje [${DEFAULT_MOUNT}]: " MOUNTPOINT
+MOUNTPOINT=${MOUNTPOINT:-$DEFAULT_MOUNT}
+
+read -rp "Hostname [${DEFAULT_HOST}]: " HOSTNAME
+HOSTNAME=${HOSTNAME:-$DEFAULT_HOST}
+
+read -rp "Usuario a crear [${DEFAULT_USER}]: " USERNAME
+USERNAME=${USERNAME:-$DEFAULT_USER}
+
+# Pedir contraseñas (no mostrarlas por pantalla)
+read -s -rp "Contraseña para root: " ROOT_PASS
+echo
+read -s -rp "Contraseña para ${USERNAME}: " USER_PASS
+echo
+
 msg "Particionado/format/etc: este script asume que ${ROOT_PART} ya existe y formateado."
-msg "Si necesitas particionar, hazlo antes y vuelve a ejecutar."
+msg "Si necesitas particionar o formatear, hazlo antes y vuelve a ejecutar."
 
-# --- Formateo y montaje (opcional; descomenta si quieres formatear) ---
-# msg "Formateando ${ROOT_PART} como ext4..."
-# mkfs.ext4 -F "${ROOT_PART}"
-
+# Montar la partición raíz
 msg "Montando ${ROOT_PART} en ${MOUNTPOINT}..."
+mkdir -p "${MOUNTPOINT}"
 mount "${ROOT_PART}" "${MOUNTPOINT}"
 
+# --- Evitar error mkinitcpio: crear /etc/vconsole.conf dentro del target ANTES de pacstrap ---
+msg "Creando ${MOUNTPOINT}/etc/vconsole.conf para evitar error de mkinitcpio..."
+mkdir -p "${MOUNTPOINT}/etc"
+cat > "${MOUNTPOINT}/etc/vconsole.conf" <<'EOF'
+KEYMAP=la-latin1
+FONT=lat9w-16
+EOF
+chmod 644 "${MOUNTPOINT}/etc/vconsole.conf"
+
 # Instalar base
-msg "Instalando paquetes base y utilidades..."
+msg "Instalando paquetes base y utilidades (pacstrap)..."
 pacstrap "${MOUNTPOINT}" base linux linux-firmware sudo vim networkmanager
 
 # Fstab
 msg "Generando fstab..."
 genfstab -U "${MOUNTPOINT}" >> "${MOUNTPOINT}/etc/fstab"
 
-# Chroot mínimo: configurar idioma, hostname, usuario (ejecutado dentro del chroot)
-msg "Configurando sistema dentro del chroot (hostname, locale)."
-arch-chroot "${MOUNTPOINT}" /bin/bash -c "
+# Crear archivo temporal con contraseñas dentro del target (modo seguro)
+msg "Creando archivo temporal de contraseñas en el sistema objetivo (se eliminará dentro del chroot)..."
+PWFILE="${MOUNTPOINT}/root/pwfile"
+umask 077
+printf '%s\n' "root:${ROOT_PASS}" "${USERNAME}:${USER_PASS}" > "${PWFILE}"
+chmod 600 "${PWFILE}"
+# asegurarnos que variables sensibles no se impriman
+unset ROOT_PASS USER_PASS
+
+# Chroot: configurar idioma, hostname, usuario y aplicar contraseñas
+msg "Configurando sistema dentro del chroot (hostname, locale, usuarios)..."
+arch-chroot "${MOUNTPOINT}" /bin/bash -e <<EOF
 set -e
 
 # hostname y zona horaria
@@ -55,26 +97,41 @@ ln -sf /usr/share/zoneinfo/America/Bogota /etc/localtime
 hwclock --systohc
 
 # locale
-sed -i '/^#${LOCALE}/s/^#//' /etc/locale.gen || true
+sed -i '/^#${DEFAULT_LOCALE}/s/^#//' /etc/locale.gen || true
 locale-gen
-echo 'LANG=${LOCALE}' > /etc/locale.conf
+echo 'LANG=${DEFAULT_LOCALE}' > /etc/locale.conf
 
-# --- Evitar error de mkinitcpio: crear /etc/vconsole.conf si no existe ---
-cat > /etc/vconsole.conf <<'VCON'
+# Asegurar vconsole.conf (redundancia)
+if [[ ! -f /etc/vconsole.conf ]]; then
+  cat > /etc/vconsole.conf <<'VCON'
 KEYMAP=la-latin1
 FONT=lat9w-16
 VCON
+fi
 
-# Regenerar initramfs (asegúrate de que el paquete linux ya esté instalado)
-mkinitcpio -P
+# Crear usuario si no existe, luego aplicar contraseñas desde /root/pwfile
+if id -u ${USERNAME} &>/dev/null; then
+  chpasswd < /root/pwfile || true
+else
+  useradd -m -G wheel -s /bin/bash ${USERNAME}
+  chpasswd < /root/pwfile
+fi
+# Eliminar el archivo de contraseñas por seguridad
+rm -f /root/pwfile
 
-# Usuario por defecto (ajusta nombre y contraseña después del primer arranque)
-useradd -m -G wheel -s /bin/bash jufedev || true
-echo 'jufedev:changeme' | chpasswd
-
-# Habilitar network
+# Habilitar NetworkManager
 systemctl enable NetworkManager
-" enable NetworkManager
-"
+
+# Regenerar initramfs por si hay cambios (opcional pero útil)
+if command -v mkinitcpio >/dev/null 2>&1; then
+  mkinitcpio -P || true
+fi
+
+EOF
+
+# Asegurarse de eliminar el pwfile si por alguna razón quedó
+if [[ -f "${PWFILE}" ]]; then
+  rm -f "${PWFILE}" || warn "No se pudo eliminar ${PWFILE} desde el host; revisa manualmente."
+fi
 
 msg "Fase 1 completada. Desmonta y reinicia para continuar con la fase 2 (ejecutar como usuario normal)."
