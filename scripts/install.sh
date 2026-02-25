@@ -11,7 +11,7 @@ set -euo pipefail
 # After reboot, login as user: bash /home/prueba-arch/scripts/install.sh
 
 # Constants and defaults
-REPO_DIR="/home/prueba-arch"
+REPO_DIR="/mnt/home/prueba-arch"
 TARGET_MNT="/mnt"
 DEFAULT_LOCALE="en_US.UTF-8"  # Additional: es_CO.UTF-8 will be enabled too
 DEFAULT_KEYMAP="us"
