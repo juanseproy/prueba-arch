@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# phase1-install.sh
+# phase1-install.sh (actualizado)
 # Instalación mínima desde live ISO. Ejecutar como root en el entorno live.
+# Incluye: grub + microcode/drivers para Intel i3-2330M (HD 3000).
 # NOTA: Ajusta valores si tu particionado es diferente.
 
 # Valores por defecto
@@ -17,7 +18,7 @@ msg(){ printf "\e[1;32m[+]\e[0m %s\n" "$*"; }
 warn(){ printf "\e[1;33m[-]\e[0m %s\n" "$*"; }
 err(){ printf "\e[1;31m[!]\e[0m %s\n" "$*"; }
 
-# Comprobaciones básicas
+# Chequeos básicos
 if [[ $EUID -ne 0 ]]; then
     err "Este script debe ejecutarse como root desde el ISO live."
     exit 1
@@ -28,11 +29,10 @@ if ! command -v pacstrap >/dev/null 2>&1; then
     exit 1
 fi
 
-# Preguntas al usuario (con valores por defecto)
+# Preguntas al usuario (valores por defecto)
 read -rp "Dispositivo (ej. /dev/sda) [${DEFAULT_DEV}]: " DEV_DISK
 DEV_DISK=${DEV_DISK:-$DEFAULT_DEV}
 
-# Sugerencia de partición root como <disk>1 por defecto
 DEFAULT_ROOT_PART="${DEV_DISK}1"
 read -rp "Partición raíz (ej ${DEFAULT_ROOT_PART}) [${DEFAULT_ROOT_PART}]: " ROOT_PART
 ROOT_PART=${ROOT_PART:-$DEFAULT_ROOT_PART}
@@ -69,9 +69,18 @@ FONT=lat9w-16
 EOF
 chmod 644 "${MOUNTPOINT}/etc/vconsole.conf"
 
-# Instalar base
-msg "Instalando paquetes base y utilidades (pacstrap)..."
-pacstrap "${MOUNTPOINT}" base linux linux-firmware sudo vim networkmanager
+# --- Detectar CPU vendor y elegir microcode (intel/amd) ---
+CPU_VENDOR=$(grep -m1 'vendor_id' /proc/cpuinfo | awk '{print $3}' || true)
+MICROCODE_PKG="intel-ucode"
+if [[ -n "${CPU_VENDOR}" && "${CPU_VENDOR,,}" == *"authenticamd"* ]] || [[ "${CPU_VENDOR,,}" == *"amd"* ]]; then
+  MICROCODE_PKG="amd-ucode"
+fi
+msg "CPU vendor detectado: '${CPU_VENDOR:-desconocido}' -> instalaré '${MICROCODE_PKG}'."
+
+# Paquetes base y extras (añadí grub y drivers Intel HD3000)
+msg "Instalando paquetes base y utilidades (incluyendo grub y drivers Intel para i3-2330M)..."
+pacstrap "${MOUNTPOINT}" base linux linux-firmware sudo vim networkmanager \
+    grub ${MICROCODE_PKG} mesa libva-intel-driver libva-utils xf86-video-intel
 
 # Fstab
 msg "Generando fstab..."
@@ -83,10 +92,9 @@ PWFILE="${MOUNTPOINT}/root/pwfile"
 umask 077
 printf '%s\n' "root:${ROOT_PASS}" "${USERNAME}:${USER_PASS}" > "${PWFILE}"
 chmod 600 "${PWFILE}"
-# asegurarnos que variables sensibles no se impriman
 unset ROOT_PASS USER_PASS
 
-# Chroot: configurar idioma, hostname, usuario y aplicar contraseñas
+# Chroot: configurar idioma, hostname, usuario y limpiar
 msg "Configurando sistema dentro del chroot (hostname, locale, usuarios)..."
 arch-chroot "${MOUNTPOINT}" /bin/bash -e <<EOF
 set -e
@@ -122,7 +130,7 @@ rm -f /root/pwfile
 # Habilitar NetworkManager
 systemctl enable NetworkManager
 
-# Regenerar initramfs por si hay cambios (opcional pero útil)
+# Regenerar initramfs por si hay cambios
 if command -v mkinitcpio >/dev/null 2>&1; then
   mkinitcpio -P || true
 fi

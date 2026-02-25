@@ -5,6 +5,7 @@ Hyprland + Waybar + Alacritty + Brave
 
 Folder Structure:
 
+```
 arch-install-automated/
 ├── README.md
 ├── .gitignore
@@ -22,4 +23,8 @@ arch-install-automated/
         │   └── alacritty.yml
         └── sddm.conf.d/
             └── wayland.conf
+```
 
+Compatible Processors:
+- i3-2330M
+- Ryzen 7 5700G
