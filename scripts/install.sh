@@ -1,23 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# arch-install.sh
+# install.sh
 # Unified script for Arch Linux installation with Hyprland + Waybar + Alacritty + Brave.
 # Supports BIOS legacy, single partition setup.
+# Assumes manual partitioning, formatting, and mounting of /dev/sda1 to /mnt.
+# Assumes repo cloned manually to /home/prueba-arch inside chroot (visible as /mnt/home/prueba-arch from live).
 # Detects CPU for drivers/microcode (Intel i3-2330M or AMD Ryzen 7 5700G compatible).
-# Run from live ISO for phase 1, then from installed system for phase 2.
-#
-# Usage in live ISO: bash arch-install.sh
-# After reboot, login as user: bash /home/arch-install/scripts/arch-install.sh
+# Run from live ISO after manual steps: bash /mnt/home/prueba-arch/scripts/install.sh
+# After reboot, login as user: bash /home/prueba-arch/scripts/install.sh
 
 # Constants and defaults
-REPO_URL="https://github.com/juanseproy/arch-install.git"  # Update to your actual repo URL if different
-REPO_DIR="/home/arch-install"
+REPO_DIR="/home/prueba-arch"
 TARGET_MNT="/mnt"
-DEFAULT_DEV="/dev/sda"
 DEFAULT_LOCALE="en_US.UTF-8"  # Additional: es_CO.UTF-8 will be enabled too
 DEFAULT_KEYMAP="us"
-DEFAULT_HOSTNAME="archbox"
+DEFAULT_HOSTNAME="jufe"
 DEFAULT_USERNAME="jufedev"
 
 # Functions
@@ -36,42 +34,28 @@ if ps -p 1 -o comm= 2>/dev/null | grep -q systemd; then
   systemd_running=true
 fi
 
-# Phase 1: Run from live ISO
+# Phase 1: Run from live ISO (assumes /mnt mounted and repo cloned)
 if $in_live; then
-  msg "Detected live ISO environment. Starting Phase 1: Base installation."
+  msg "Detected live ISO environment. Starting Phase 1: Base installation (post-manual mount)."
 
   if [[ $EUID -ne 0 ]]; then
     err "Must run as root in live ISO."
     exit 1
   fi
 
-  # Prompt for inputs
-  read -rp "Disk device (e.g., ${DEFAULT_DEV}) [${DEFAULT_DEV}]: " DEV_DISK
-  DEV_DISK=${DEV_DISK:-$DEFAULT_DEV}
-
-  warn "WARNING: Partitioning will ERASE ALL DATA on ${DEV_DISK}. Proceed? (y/N)"
-  read -rp "" confirm
-  if [[ "${confirm,,}" != "y" ]]; then
-    err "Aborted."
+  # Check if /mnt is mounted
+  if ! mountpoint -q "${TARGET_MNT}"; then
+    err "/mnt is not mounted. Mount your root partition to /mnt and run again."
     exit 1
   fi
 
-  # Partitioning (simple: MBR, one primary partition)
-  msg "Partitioning ${DEV_DISK}..."
-  (
-    echo o  # Create DOS partition table
-    echo n  # New partition
-    echo p  # Primary
-    echo 1  # Partition 1
-    echo    # Default start
-    echo    # Default end (full disk)
-    echo w  # Write
-  ) | fdisk "${DEV_DISK}"
+  # Check if repo exists
+  if [[ ! -d "${TARGET_MNT}${REPO_DIR}" ]]; then
+    err "Repo not found at ${TARGET_MNT}${REPO_DIR}. Clone it manually inside chroot first."
+    exit 1
+  fi
 
-  ROOT_PART="${DEV_DISK}1"
-  msg "Formatting ${ROOT_PART} as ext4..."
-  mkfs.ext4 "${ROOT_PART}"
-
+  # Prompt for inputs
   read -rp "Hostname [${DEFAULT_HOSTNAME}]: " HOSTNAME
   HOSTNAME=${HOSTNAME:-$DEFAULT_HOSTNAME}
 
@@ -82,11 +66,6 @@ if $in_live; then
   echo
   read -s -rp "User password for ${USERNAME}: " USER_PASS
   echo
-
-  # Mount
-  msg "Mounting ${ROOT_PART} to ${TARGET_MNT}..."
-  mkdir -p "${TARGET_MNT}"
-  mount "${ROOT_PART}" "${TARGET_MNT}"
 
   # Detect CPU vendor for microcode and drivers
   CPU_VENDOR=$(grep -m1 'vendor_id' /proc/cpuinfo | awk '{print $3}' || echo "unknown")
@@ -104,9 +83,9 @@ if $in_live; then
     warn "CPU vendor unknown. Skipping specific drivers/microcode. Install manually later."
   fi
 
-  # Pacstrap base system
+  # Pacstrap base system (git already installed manually)
   msg "Installing base packages..."
-  pacstrap "${TARGET_MNT}" base linux linux-firmware vim sudo git networkmanager grub ${MICROCODE_PKG} ${DRIVER_PKGS}
+  pacstrap "${TARGET_MNT}" base linux linux-firmware vim sudo networkmanager grub ${MICROCODE_PKG} ${DRIVER_PKGS}
 
   # Generate fstab
   msg "Generating fstab..."
@@ -154,22 +133,18 @@ rm -f /root/pwfile
 sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 
 # Install base-devel (for AUR later)
-pacman -S --noconfirm base-devel
+pacman -S --noconfirm base-devel git
 
 # Enable multilib
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
 pacman -Syu --noconfirm
 
-# GRUB
-grub-install --target=i386-pc ${DEV_DISK}
+# GRUB (assume /dev/sda)
+grub-install --target=i386-pc /dev/sda
 grub-mkconfig -o /boot/grub/grub.cfg
 
 # Network
 systemctl enable NetworkManager
-
-# Clone repo for configs and phase2 script
-git clone ${REPO_URL} ${REPO_DIR}
-chown -R ${USERNAME}:${USERNAME} ${REPO_DIR}
 
 # Regenerate initramfs
 mkinitcpio -P
@@ -178,7 +153,7 @@ EOF
   # Unmount and reboot
   msg "Phase 1 complete. Unmounting..."
   umount -R "${TARGET_MNT}"
-  msg "Remove ISO and reboot. After login as ${USERNAME}, run: bash ${REPO_DIR}/scripts/arch-install.sh"
+  msg "Remove ISO and reboot. After login as ${USERNAME}, run: bash ${REPO_DIR}/scripts/install.sh"
   exit 0
 fi
 
@@ -219,7 +194,7 @@ if $systemd_running; then
     grim slurp swappy polkit-kde-agent xdg-desktop-portal-hyprland ttf-font-awesome noto-fonts-emoji \
     qt5-wayland qt6-wayland ttf-cascadia-code
 
-  # If git version needed: yay -S --noconfirm hyprland-wayland-git waybar-hyprland
+  # If git version needed: yay -S --noconfirm hyprland-git waybar-hyprland-git
 
   # SDDM wayland config
   msg "Configuring SDDM for Wayland..."
