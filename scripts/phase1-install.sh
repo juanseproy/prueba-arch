@@ -2,127 +2,63 @@
 set -euo pipefail
 
 # phase1-install.sh
-# Instalación base de Arch Linux desde live ISO.
-# Ejecutar como root.
-# Ajusta las variables siguientes según tu hardware y preferencias.
+# Instalación mínima desde live ISO. Ejecutar como root en el entorno live.
+# NOTA: Ajusta DEV_DISK / particiones según tu hardware antes de ejecutar.
 
-# === CONFIGURACIÓN ===
-DEV_DISK="/dev/sda"               # Disco completo (sin número)
-DEV_PART="${DEV_DISK}1"           # Partición raíz (asumimos una sola partición)
+DEV_DISK="/dev/sda"
+ROOT_PART="${DEV_DISK}1"
 MOUNTPOINT="/mnt"
-USERNAME="jufedev"
-USER_SHELL="/bin/bash"
-HOSTNAME="jufe"
-TIMEZONE="America/Bogota"
-LOCALE="en_US.UTF-8"
-KEYMAP="us"
+LOCALE="es_CO.UTF-8"
+HOSTNAME="archbox"
 
-# Paquetes adicionales a instalar (separados por espacios)
-PACKAGES="base linux linux-headers linux-firmware vim sudo grub networkmanager"
+# Mensajes
+msg(){ printf "\e[1;32m[+]\e[0m %s\n" "$*"; }
+err(){ printf "\e[1;31m[!]\e[0m %s\n" "$*"; }
 
-# Si el sistema es UEFI, necesitamos efibootmgr y el target adecuado.
-# La detección se hará dentro del chroot, pero podemos añadir efibootmgr ya.
-# Lo incluimos siempre, no estorba en BIOS.
-PACKAGES="$PACKAGES efibootmgr"
-
-# === FUNCIONES ===
-msg() {
-    echo "==> $*"
-}
-
-error() {
-    echo "Error: $*" >&2
+# Comprobaciones básicas
+if [[ $EUID -ne 0 ]]; then
+    err "Este script debe ejecutarse como root desde el ISO live."
     exit 1
-}
-
-# === COMPROBACIONES PREVIAS ===
-msg "Verificando que $MOUNTPOINT esté montado..."
-if ! mountpoint -q "$MOUNTPOINT"; then
-    error "$MOUNTPOINT no está montado. Monta la partición (ej: mount $DEV_PART $MOUNTPOINT) y vuelve a ejecutar."
 fi
 
-msg "Verificando que la partición montada sea $DEV_PART..."
-if ! findmnt "$MOUNTPOINT" | grep -q "$DEV_PART"; then
-    error "La partición montada en $MOUNTPOINT no es $DEV_PART. Revisa las variables DEV_DISK/DEV_PART."
+if ! command -v pacstrap >/dev/null 2>&1; then
+    err "No encuentro pacstrap. Ejecuta esto desde el ambiente live de Arch."
+    exit 1
 fi
 
-# === CONTRASEÑAS ===
-: "${ROOT_PASS:=}"
-: "${USER_PASS:=}"
+msg "Particionado/format/etc: este script asume que ${ROOT_PART} ya existe y formateado."
+msg "Si necesitas particionar, hazlo antes y vuelve a ejecutar."
 
-if [ -z "$ROOT_PASS" ]; then
-    read -s -p "Contraseña para root: " ROOT_PASS
-    echo
-fi
+# --- Formateo y montaje (opcional; descomenta si quieres formatear) ---
+# msg "Formateando ${ROOT_PART} como ext4..."
+# mkfs.ext4 -F "${ROOT_PART}"
 
-if [ -z "$USER_PASS" ]; then
-    read -s -p "Contraseña para $USERNAME: " USER_PASS
-    echo
-fi
+msg "Montando ${ROOT_PART} en ${MOUNTPOINT}..."
+mount "${ROOT_PART}" "${MOUNTPOINT}"
 
-# === INSTALACIÓN BASE ===
-msg "Instalando paquetes base con pacstrap..."
-pacstrap -K "$MOUNTPOINT" $PACKAGES
+# Instalar base
+msg "Instalando paquetes base y utilidades..."
+pacstrap "${MOUNTPOINT}" base linux linux-firmware sudo vim networkmanager
 
+# Fstab
 msg "Generando fstab..."
-genfstab -U "$MOUNTPOINT" >> "$MOUNTPOINT/etc/fstab"
+genfstab -U "${MOUNTPOINT}" >> "${MOUNTPOINT}/etc/fstab"
 
-# === CONFIGURACIÓN DENTRO DEL CHROOT ===
-msg "Configurando sistema en el chroot..."
-arch-chroot "$MOUNTPOINT" /bin/bash <<EOF
-set -euo pipefail
-
-# Zona horaria y reloj
-ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
+# Chroot mínimo: configurar idioma, hostname, usuario (ejecutado dentro del chroot)
+msg "Configurando sistema dentro del chroot (hostname, locale)."
+arch-chroot "${MOUNTPOINT}" /bin/bash -c "
+set -e
+echo '${HOSTNAME}' > /etc/hostname
+ln -sf /usr/share/zoneinfo/America/Bogota /etc/localtime
 hwclock --systohc
-
-# Locales
-echo "LANG=$LOCALE" > /etc/locale.conf
-sed -i 's/^#$LOCALE/$LOCALE/' /etc/locale.gen
+sed -i '/^#${LOCALE}/s/^#//' /etc/locale.gen || true
 locale-gen
-
-# Teclado
-echo "KEYMAP=$KEYMAP" > /etc/vconsole.conf
-
-# Hostname y hosts
-echo "$HOSTNAME" > /etc/hostname
-cat > /etc/hosts <<EOL
-127.0.0.1   localhost
-::1         localhost
-127.0.1.1   $HOSTNAME.localdomain $HOSTNAME
-EOL
-
-# Contraseña de root
-echo "root:$ROOT_PASS" | chpasswd
-
-# Crear usuario y contraseña
-useradd -m -G wheel -s $USER_SHELL $USERNAME
-echo "$USERNAME:$USER_PASS" | chpasswd
-
-# Habilitar sudo para el grupo wheel
-sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
-
-# Instalación de GRUB (detección automática UEFI/BIOS)
-if [ -d /sys/firmware/efi ]; then
-    echo "Sistema UEFI detectado, instalando GRUB para UEFI..."
-    grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
-else
-    echo "Sistema BIOS detectado, instalando GRUB para MBR..."
-    grub-install --target=i386-pc $DEV_DISK
-fi
-
-# Generar configuración de GRUB
-grub-mkconfig -o /boot/grub/grub.cfg
-
-# Regenerar initramfs
-mkinitcpio -P
-
-# Habilitar NetworkManager para conectividad automática al inicio
+echo 'LANG=${LOCALE}' > /etc/locale.conf
+# Usuario por defecto (ajusta nombre y contraseña después del primer arranque)
+useradd -m -G wheel -s /bin/bash jufedev || true
+echo 'jufedev:changeme' | chpasswd
+# Habilitar network
 systemctl enable NetworkManager
+"
 
-EOF
-
-# === FIN ===
-msg "Instalación base completada."
-msg "Puedes desmontar las particiones con: umount -R $MOUNTPOINT"
-msg "Luego reinicia con: reboot"
+msg "Fase 1 completada. Desmonta y reinicia para continuar con la fase 2 (ejecutar como usuario normal)."
