@@ -48,17 +48,33 @@ genfstab -U "${MOUNTPOINT}" >> "${MOUNTPOINT}/etc/fstab"
 msg "Configurando sistema dentro del chroot (hostname, locale)."
 arch-chroot "${MOUNTPOINT}" /bin/bash -c "
 set -e
+
+# hostname y zona horaria
 echo '${HOSTNAME}' > /etc/hostname
 ln -sf /usr/share/zoneinfo/America/Bogota /etc/localtime
 hwclock --systohc
+
+# locale
 sed -i '/^#${LOCALE}/s/^#//' /etc/locale.gen || true
 locale-gen
 echo 'LANG=${LOCALE}' > /etc/locale.conf
+
+# --- Evitar error de mkinitcpio: crear /etc/vconsole.conf si no existe ---
+cat > /etc/vconsole.conf <<'VCON'
+KEYMAP=la-latin1
+FONT=lat9w-16
+VCON
+
+# Regenerar initramfs (asegúrate de que el paquete linux ya esté instalado)
+mkinitcpio -P
+
 # Usuario por defecto (ajusta nombre y contraseña después del primer arranque)
 useradd -m -G wheel -s /bin/bash jufedev || true
 echo 'jufedev:changeme' | chpasswd
+
 # Habilitar network
 systemctl enable NetworkManager
+" enable NetworkManager
 "
 
 msg "Fase 1 completada. Desmonta y reinicia para continuar con la fase 2 (ejecutar como usuario normal)."
