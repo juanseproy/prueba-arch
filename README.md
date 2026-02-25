@@ -6,7 +6,7 @@ Hyprland + Waybar + Alacritty + Brave
 Folder Structure:
 
 ```
-arch-install-automated/
+arch-install/
 ├── README.md
 ├── .gitignore
 ├── scripts/
