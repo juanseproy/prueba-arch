@@ -6,16 +6,16 @@ set -euo pipefail
 # Modo 2 (sistema instalado): ejecutar desde el sistema ya arrancado (usuario normal con sudo).
 #
 # Uso:
-#  - En entorno live/chroot: sudo ./phase2-postinstall.sh --target /mnt --disk /dev/sda
+#  - En entorno live/chroot: sudo ./phase2-postinstall.sh --target /mnt --disk /dev/sda1
 #  - En sistema instalado: ./phase2-postinstall.sh
 #
 # IMPORTANTE: revisa DEV_DISK antes de ejecutar (evita sobrescribir el disco equivocado).
 
 # Defaults
 TARGET_MNT="/mnt"
-DEV_DISK="/dev/sda"        # <<-- ajusta si tu disco no es /dev/sda
+DEV_DISK="/dev/sda1"        # <<-- ajusta si tu disco no es /dev/sda1
 USERNAME="${SUDO_USER:-${USER:-jufedev}}"
-REPO_DIR="${HOME}/prueba-arch"   # carpeta donde están tus configs (si existe)
+REPO_DIR="/home/prueba-arch"   # carpeta donde están tus configs (si existe)
 
 # Parse args simples
 while [[ $# -gt 0 ]]; do
@@ -23,7 +23,7 @@ while [[ $# -gt 0 ]]; do
     --target) TARGET_MNT="$2"; shift 2;;
     --disk) DEV_DISK="$2"; shift 2;;
     --repo) REPO_DIR="$2"; shift 2;;
-    --help) echo "Uso: $0 [--target /mnt] [--disk /dev/sda]"; exit 0;;
+    --help) echo "Uso: $0 [--target /mnt] [--disk /dev/sda1]"; exit 0;;
     *) shift;;
   esac
 done
