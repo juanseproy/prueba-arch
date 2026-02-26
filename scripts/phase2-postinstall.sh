@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# install_phase2.sh
+# install_phase2.sha
 # Phase 2 script for desktop setup after base Arch installation.
 # Run from installed system after reboot and login:
 # bash /home/prueba-arch/scripts/install_phase2.sh
