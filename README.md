@@ -11,7 +11,7 @@ arch-install/
 ├── .gitignore
 ├── scripts/
 │   ├── phase1-install.sh
-│   └── phase2-desktop.sh
+│   └── phase2-postinstall.sh
 └── configs/
     └── wayland/
         ├── hyprland/

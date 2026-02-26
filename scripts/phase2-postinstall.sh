@@ -64,7 +64,7 @@ sudo pacman -S --noconfirm hyprland waybar alacritty rofi dunst swaybg swaylock 
 # SDDM wayland config
 msg "Configuring SDDM for Wayland..."
 sudo mkdir -p /etc/sddm.conf.d
-cat <<SDDM > /etc/sddm.conf.d/wayland.conf
+sudo tee /etc/sddm.conf.d/wayland.conf <<SDDM >/dev/null
 [General]
 DisplayServer=wayland
 GreeterEnvironment=QT_WAYLAND_SHELL_INTEGRATION=layer-shell
