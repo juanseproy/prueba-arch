@@ -7,11 +7,13 @@ set -euo pipefail
 # Assumes manual partitioning, formatting, and mounting of /dev/sda1 to /mnt.
 # Assumes repo cloned manually to /home/prueba-arch inside chroot (visible as /mnt/home/prueba-arch from live).
 # Detects CPU for drivers/microcode (Intel i3-2330M or AMD Ryzen 7 5700G compatible).
+# For Intel (laptop with WiFi): Includes WiFi firmware via linux-firmware (iwlwifi typically covered).
+# For AMD (desktop PC): No WiFi assumed.
 # Run from live ISO after manual steps: bash /mnt/home/prueba-arch/scripts/install.sh
 # After reboot, login as user: bash /home/prueba-arch/scripts/install.sh
 
 # Constants and defaults
-REPO_DIR="/mnt/home/prueba-arch"
+REPO_DIR="/home/prueba-arch"
 TARGET_MNT="/mnt"
 DEFAULT_LOCALE="en_US.UTF-8"  # Additional: es_CO.UTF-8 will be enabled too
 DEFAULT_KEYMAP="us"
@@ -58,7 +60,7 @@ if $in_live; then
   # Enable multilib in live pacman.conf
   msg "Enabling multilib repository..."
   sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
-  pacman -Syu --noconfirm
+  pacman -Syy --noconfirm  # Use -Syy to refresh without upgrading to avoid filling live ISO RAM
 
   # Prompt for inputs
   read -rp "Hostname [${DEFAULT_HOSTNAME}]: " HOSTNAME
@@ -77,13 +79,13 @@ if $in_live; then
   MICROCODE_PKG=""
   DRIVER_PKGS=""
   if [[ "${CPU_VENDOR,,}" == *"intel"* ]]; then
-    msg "Detected Intel CPU (i3-2330M compatible)."
+    msg "Detected Intel CPU (i3-2330M laptop with WiFi compatible)."
     MICROCODE_PKG="intel-ucode"
-    DRIVER_PKGS="mesa vulkan-intel lib32-mesa lib32-vulkan-intel xf86-video-intel libva-intel-driver libva-utils"
+    DRIVER_PKGS="mesa vulkan-intel lib32-mesa lib32-vulkan-intel xf86-video-intel libva-intel-driver libva-utils"  # WiFi via linux-firmware
   elif [[ "${CPU_VENDOR,,}" == *"authenticamd"* || "${CPU_VENDOR,,}" == *"amd"* ]]; then
-    msg "Detected AMD CPU (Ryzen 7 5700G compatible)."
+    msg "Detected AMD CPU (Ryzen 7 5700G desktop compatible)."
     MICROCODE_PKG="amd-ucode"
-    DRIVER_PKGS="mesa vulkan-radeon lib32-mesa lib32-vulkan-radeon amdvlk libva-mesa-driver"
+    DRIVER_PKGS="mesa vulkan-radeon lib32-mesa lib32-vulkan-radeon libva-mesa-driver"  # Removed amdvlk as it's AUR-only
   else
     warn "CPU vendor unknown. Skipping specific drivers/microcode. Install manually later."
   fi
