@@ -1,25 +1,74 @@
-window:
-  padding:
-    x: 10
-    y: 10
-  opacity: 0.9
-font:
-  normal:
-    family: "DejaVu Sans Mono"
-    style: Regular
-  size: 12
-colors:
-  primary:
-    background: '#1e1e2e'
-    foreground: '#cdd6f4'
-  normal:
-    black:   '#45475a'
-    red:     '#f38ba8'
-    green:   '#a6e3a1'
-    yellow:  '#f9e2af'
-    blue:    '#89b4fa'
-    magenta: '#f5c2e7'
-    cyan:    '#94e2d5'
-    white:   '#bac2de'
-selection:
-  save_to_clipboard: true
+# =========================
+# Ventana
+# =========================
+
+[window]
+padding = { x = 10, y = 10 }
+dynamic_padding = true
+opacity = 0.95
+decorations = "none"
+
+[window.class]
+instance = "Alacritty"
+general = "Alacritty"
+
+# =========================
+# Fuente
+# =========================
+
+[font]
+size = 11.0
+
+[font.normal]
+family = "JetBrainsMono Nerd Font"
+style = "Regular"
+
+[font.bold]
+family = "JetBrainsMono Nerd Font"
+style = "Bold"
+
+[font.italic]
+family = "JetBrainsMono Nerd Font"
+style = "Italic"
+
+# =========================
+# Cursor
+# =========================
+
+[cursor]
+style = { shape = "Block", blinking = "On" }
+
+# =========================
+# Colores (tema oscuro limpio)
+# =========================
+
+[colors.primary]
+background = "#1e1e2e"
+foreground = "#cdd6f4"
+
+[colors.normal]
+black   = "#45475a"
+red     = "#f38ba8"
+green   = "#a6e3a1"
+yellow  = "#f9e2af"
+blue    = "#89b4fa"
+magenta = "#f5c2e7"
+cyan    = "#94e2d5"
+white   = "#bac2de"
+
+[colors.bright]
+black   = "#585b70"
+red     = "#f38ba8"
+green   = "#a6e3a1"
+yellow  = "#f9e2af"
+blue    = "#89b4fa"
+magenta = "#f5c2e7"
+cyan    = "#94e2d5"
+white   = "#a6adc8"
+
+# =========================
+# Wayland (importante)
+# =========================
+
+[env]
+WINIT_UNIX_BACKEND = "wayland"
