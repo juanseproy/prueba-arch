@@ -67,6 +67,7 @@ if command -v yay >/dev/null 2>&1; then
 else
   # makepkg NO puede ejecutarse como root; como ya somos el usuario normal, va directo.
   # /tmp puede tener noexec en algunos setups; usar $HOME como fallback.
+  mkdir -p "${HOME}/.cache"
   BUILD_DIR=$(mktemp -d "${HOME}/.cache/yay-build-XXXX")
   git clone https://aur.archlinux.org/yay.git "${BUILD_DIR}"
   cd "${BUILD_DIR}"
