@@ -53,10 +53,31 @@ if ! command -v yay >/dev/null 2>&1; then
   rm -rf /tmp/yay
 fi
 
-# Audio (Pipewire) - Moved here to install before Waybar to avoid jack2 dependency
-msg "Installing Pipewire..."
-sudo pacman -S --noconfirm pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber
-systemctl --user enable --now pipewire pipewire-pulse wireplumber
+# Audio (PipeWire) - manejar conflicto con jack2 si existe
+msg "Instalando PipeWire (manejo de conflictos con jack2)..."
+
+if pacman -Qi jack2 >/dev/null 2>&1; then
+  warn "Se detectó jack2 instalado. Lo reemplazaré por pipewire-jack para evitar conflictos."
+  # opcional: listar paquetes que dependen de jack2 (útil si quieres revisar manualmente)
+  pacman -Qi jack2 | sed -n '1,40p'
+  # quitar jack2 (y dependencias huérfanas que vinieron con él)
+  sudo pacman -Rns --noconfirm jack2 || {
+    err "Fallo al remover jack2. Revisa manualmente con 'pacman -Qi jack2' y dependencias."
+    exit 1
+  }
+fi
+
+# instalar pipewire completo y la compatibilidad JACK
+sudo pacman -S --noconfirm pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber || {
+  err "Fallo instalando paquetes de PipeWire."
+  exit 1
+}
+
+if loginctl show-user "$USER" &>/dev/null; then
+  systemctl --user enable --now pipewire pipewire-pulse wireplumber || warn "No se pudo habilitar servicios user; habilitalos manualmente."
+else
+  warn "No se detecta sesión de usuario activa para habilitar servicios -- ejecútalos manualmente con 'systemctl --user enable --now ...' después de login."
+fi
 
 # Install Hyprland and related (use AUR git if preferred, but repo for stability)
 msg "Installing Hyprland and dependencies..."
