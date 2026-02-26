@@ -2,9 +2,20 @@
     "layer": "top",
     "position": "top",
     "height": 30,
-    "modules-left": ["hyprland/workspaces"],
-    "modules-center": ["clock"],
-    "modules-right": ["pulseaudio", "network", "battery", "tray"],
+    "modules-left": [
+        "custom/terminal",
+        "hyprland/workspaces",
+        "hyprland/window"
+    ],
+    "modules-center": [
+        "clock"
+    ],
+    "modules-right": [
+        "pulseaudio",
+        "network",
+        "battery",
+        "tray"
+    ],
     "hyprland/workspaces": {
         "disable-scroll": true,
         "all-outputs": true,
@@ -27,7 +38,11 @@
     "pulseaudio": {
         "format": "{volume}% {icon}",
         "format-muted": "",
-        "format-icons": ["", "", ""]
+        "format-icons": [
+            "",
+            "",
+            ""
+        ]
     },
     "network": {
         "format-wifi": "{essid} ({signalStrength}%)",
@@ -36,10 +51,23 @@
     },
     "battery": {
         "format": "{capacity}% {icon}",
-        "format-icons": ["", "", "", "", ""]
+        "format-icons": [
+            "",
+            "",
+            "",
+            "",
+            ""
+        ]
     },
     "tray": {
         "icon-size": 21,
         "spacing": 10
+    },
+    "custom/terminal": {
+        "format": "TERM",
+        "tooltip": "Abrir Alacritty",
+        "on-click": "alacritty",
+        "on-click-right": "alacritty",
+        "escape": true
     }
 }
