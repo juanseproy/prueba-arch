@@ -39,7 +39,7 @@ sudo pacman -Syu --noconfirm
 # Install SDDM
 msg "Installing SDDM..."
 sudo pacman -S --noconfirm sddm
-sudo systemctl enable --now sddm
+sudo systemctl enable sddm
 
 # Detect CPU again for any additional drivers (though installed in phase1)
 CPU_VENDOR=$(grep -m1 'vendor_id' /proc/cpuinfo | awk '{print $3}' || echo "unknown")
@@ -137,7 +137,7 @@ sudo chown root:root /etc/sddm.conf.d/wayland.conf
 # Bluetooth
 msg "Installing Bluetooth..."
 sudo pacman -S --noconfirm bluez bluez-utils blueman
-sudo systemctl enable --now bluetooth
+sudo systemctl enable bluetooth
 
 # Utilities
 msg "Installing utilities..."
