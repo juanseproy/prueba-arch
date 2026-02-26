@@ -10,8 +10,8 @@ arch-install/
 ├── README.md
 ├── .gitignore
 ├── scripts/
-│   ├── phase1-install.sh
-│   └── phase2-postinstall.sh
+│   ├── install.sh
+│   └── postinstall.sh
 └── configs/
     └── wayland/
         ├── hyprland/
