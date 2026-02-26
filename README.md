@@ -20,7 +20,7 @@ arch-install/
         │   ├── config
         │   └── style.css
         ├── alacritty/
-        │   └── alacritty.yml
+        │   └── alacritty.toml
         └── sddm.conf.d/
             └── wayland.conf
 ```
