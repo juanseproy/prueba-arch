@@ -98,6 +98,7 @@ sudo pacman -S --noconfirm --needed \
 # rofi-wayland: el rofi de repos oficiales no tiene soporte Wayland nativo.
 msg "Instalando rofi-wayland (AUR)..."
 yay -S --noconfirm rofi-wayland || warn "Fallo instalando rofi-wayland desde AUR."
+yay -S --noconfirm ttf-cascadia-code-nerd || warn "Fallo instalando cascadia nerd desde AUR."
 
 # ─── Bluetooth ────────────────────────────────────────────────────────────────
 msg "Instalando Bluetooth..."
