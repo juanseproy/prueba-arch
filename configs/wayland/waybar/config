@@ -64,7 +64,7 @@
         "spacing": 10
     },
     "custom/terminal": {
-        "format": "TERM",
+        "format": "",
         "tooltip": "Abrir Alacritty",
         "on-click": "alacritty",
         "on-click-right": "alacritty",
