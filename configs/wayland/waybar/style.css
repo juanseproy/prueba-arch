@@ -185,12 +185,6 @@ window#waybar {
 #custom-battery.critical {
     color: #f38ba8;
     background: rgba(243, 139, 168, 0.15);
-    animation: blink 1s ease-in-out infinite;
-}
-
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0.4; }
 }
 
 /* ── Botón de apagado ────────────────────────────────────────────────────── */

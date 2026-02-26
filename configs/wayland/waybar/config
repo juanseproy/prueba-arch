@@ -109,6 +109,6 @@
     "custom/power": {
         "format": "⏻",
         "tooltip": false,
-        "on-click": "bash -c 'echo \"\n  Apagar\n  Reiniciar\n  Suspender\n  Cerrar sesión\" | rofi -dmenu -p \"󰐥 Power\" | grep -q \"Apagar\" && systemctl poweroff; grep -q \"Reiniciar\" && systemctl reboot; grep -q \"Suspender\" && systemctl suspend; grep -q \"Cerrar\" && hyprctl dispatch exit'"
+        "on-click": "bash -c 'echo -e \"Apagar\nReiniciar\nSuspender\nCerrar sesión\" | rofi -dmenu -p \"Power\" | xargs -I{} bash -c \"grep -q Apagar <<< {} && systemctl poweroff; grep -q Reiniciar <<< {} && systemctl reboot; grep -q Suspender <<< {} && systemctl suspend; grep -q Cerrar <<< {} && hyprctl dispatch exit\"'"
     }
 }
