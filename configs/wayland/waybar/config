@@ -1,9 +1,12 @@
 {
     "layer": "top",
     "position": "top",
-    "height": 30,
+    "height": 34,
+    "spacing": 0,
+    "margin-top": 6,
+    "margin-left": 10,
+    "margin-right": 10,
     "modules-left": [
-        "custom/terminal",
         "hyprland/workspaces",
         "hyprland/window"
     ],
@@ -11,14 +14,18 @@
         "clock"
     ],
     "modules-right": [
+        "cpu",
+        "memory",
         "pulseaudio",
         "network",
-        "battery",
-        "tray"
+        "bluetooth",
+        "custom/battery",
+        "custom/power"
     ],
     "hyprland/workspaces": {
         "disable-scroll": true,
         "all-outputs": true,
+        "on-click": "activate",
         "format": "{icon}",
         "format-icons": {
             "1": "一",
@@ -26,48 +33,82 @@
             "3": "三",
             "4": "四",
             "5": "五",
-            "urgent": "",
-            "focused": "",
-            "default": ""
+            "urgent": "",
+            "active": "",
+            "default": "·"
+        },
+        "persistent-workspaces": {
+            "1": [],
+            "2": [],
+            "3": [],
+            "4": [],
+            "5": []
         }
     },
+    "hyprland/window": {
+        "format": "{}",
+        "max-length": 40,
+        "separate-outputs": true
+    },
     "clock": {
-        "format": "{:%H:%M}",
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+        "format": "  {:%a %d %b   %H:%M:%S}",
+        "interval": 1,
+        "tooltip-format": "<big>{:%B %Y}</big>\n<tt><small>{calendar}</small></tt>",
+        "calendar": {
+            "mode": "month",
+            "weeks-pos": "left",
+            "format": {
+                "today": "<span color='#f38ba8'><b>{}</b></span>"
+            }
+        }
+    },
+    "cpu": {
+        "interval": 2,
+        "format": "  {usage}%",
+        "tooltip": false
+    },
+    "memory": {
+        "interval": 2,
+        "format": "  {percentage}%",
+        "tooltip-format": "{used:0.1f}GB / {total:0.1f}GB"
     },
     "pulseaudio": {
-        "format": "{volume}% {icon}",
-        "format-muted": "",
-        "format-icons": [
-            "",
-            "",
-            ""
-        ]
+        "format": "{icon}  {volume}%",
+        "format-muted": "󰝟  0%",
+        "format-icons": {
+            "default": [
+                "󰕿",
+                "󰖀",
+                "󰕾"
+            ]
+        },
+        "on-click": "pavucontrol",
+        "scroll-step": 5
     },
     "network": {
-        "format-wifi": "{essid} ({signalStrength}%)",
-        "format-ethernet": "",
-        "format-disconnected": "⚠ Sin conexión"
+        "format-wifi": "  {essid} ({signalStrength}%)",
+        "format-ethernet": "󰈀  Ethernet",
+        "format-disconnected": "󰖪  Sin conexión",
+        "tooltip-format-wifi": "{ipaddr} — {frequency} GHz\n{bandwidthDownBytes} ↓  {bandwidthUpBytes} ↑",
+        "interval": 5
     },
-    "battery": {
-        "format": "{capacity}% {icon}",
-        "format-icons": [
-            "",
-            "",
-            "",
-            "",
-            ""
-        ]
+    "bluetooth": {
+        "format": "󰂯",
+        "format-disabled": "󰂲",
+        "format-connected": "󰂱  {device_alias}",
+        "tooltip-format": "{controller_alias} — {controller_address}\n{num_connections} dispositivo(s) conectado(s)",
+        "on-click": "blueman-manager"
     },
-    "tray": {
-        "icon-size": 21,
-        "spacing": 10
+    "custom/battery": {
+        "exec": "~/.config/waybar/scripts/battery.sh",
+        "interval": 30,
+        "return-type": "json",
+        "format": "{}",
+        "tooltip": true
     },
-    "custom/terminal": {
-        "format": "",
-        "tooltip": "Abrir Alacritty",
-        "on-click": "alacritty",
-        "on-click-right": "alacritty",
-        "escape": true
+    "custom/power": {
+        "format": "⏻",
+        "tooltip": false,
+        "on-click": "bash -c 'echo \"\n  Apagar\n  Reiniciar\n  Suspender\n  Cerrar sesión\" | rofi -dmenu -p \"󰐥 Power\" | grep -q \"Apagar\" && systemctl poweroff; grep -q \"Reiniciar\" && systemctl reboot; grep -q \"Suspender\" && systemctl suspend; grep -q \"Cerrar\" && hyprctl dispatch exit'"
     }
 }

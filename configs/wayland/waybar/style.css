@@ -1,33 +1,217 @@
+/* ═══════════════════════════════════════════════════════════
+   Waybar — Dark theme con acentos de color
+   Paleta: Catppuccin Mocha adaptada
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Variables de color ─────────────────────────────────────────────────── */
+/* Base:       #1e1e2e  |  Surface:   #313244  |  Overlay:   #45475a  */
+/* Text:       #cdd6f4  |  Subtext:   #a6adc8  */
+/* Rosewater:  #f5e0dc  |  Flamingo:  #f2cdcd  |  Pink:      #f38ba8  */
+/* Mauve:      #cba6f7  |  Red:       #f38ba8  |  Peach:     #fab387  */
+/* Yellow:     #f9e2af  |  Green:     #a6e3a1  |  Teal:      #94e2d5  */
+/* Sky:        #89dceb  |  Blue:      #89b4fa  |  Lavender:  #b4befe  */
+
 * {
+    font-family: "Cascadia Code", "Font Awesome 6 Free", monospace;
+    font-size: 13px;
     border: none;
     border-radius: 0;
-    font-family: "DejaVu Sans", "Noto Color Emoji";
-    font-size: 14px;
     min-height: 0;
 }
 
+/* ── Barra principal ─────────────────────────────────────────────────────── */
 window#waybar {
-    background: rgba(0, 0, 0, 0.8);
-    color: #ffffff;
+    background: rgba(30, 30, 46, 0.92);
+    color: #cdd6f4;
+    border-radius: 12px;
+    border: 1px solid rgba(180, 190, 254, 0.15);
+}
+
+/* ── Módulos: padding base ───────────────────────────────────────────────── */
+.modules-left,
+.modules-center,
+.modules-right {
+    padding: 0 6px;
+}
+
+#workspaces,
+#window,
+#clock,
+#cpu,
+#memory,
+#pulseaudio,
+#network,
+#bluetooth,
+#custom-battery,
+#custom-power {
+    padding: 0 10px;
+    color: #cdd6f4;
+    border-radius: 8px;
+    margin: 4px 2px;
+}
+
+/* ── Workspaces ──────────────────────────────────────────────────────────── */
+#workspaces {
+    background: rgba(49, 50, 68, 0.6);
+    padding: 0 4px;
 }
 
 #workspaces button {
-    padding: 0 5px;
-    background: transparent;
-    color: #ffffff;
-    border-bottom: 2px solid transparent;
-}
-
-#workspaces button.focused {
-    background: #285577;
-    border-bottom: 2px solid #ffffff;
-}
-
-#clock, #pulseaudio, #network, #battery, #tray {
     padding: 0 8px;
-    margin: 0 2px;
+    color: #6c7086;
+    background: transparent;
+    border-radius: 6px;
+    margin: 2px 1px;
+    font-size: 14px;
+    transition: all 0.2s ease;
 }
 
-#battery.critical {
-    color: #ff5555;
+#workspaces button:hover {
+    background: rgba(180, 190, 254, 0.1);
+    color: #b4befe;
+}
+
+#workspaces button.active {
+    color: #cba6f7;
+    background: rgba(203, 166, 247, 0.15);
+    border-bottom: 2px solid #cba6f7;
+}
+
+#workspaces button.urgent {
+    color: #f38ba8;
+    background: rgba(243, 139, 168, 0.15);
+}
+
+/* ── Título de ventana ───────────────────────────────────────────────────── */
+#window {
+    color: #a6adc8;
+    background: transparent;
+    font-style: italic;
+}
+
+#window:empty {
+    background: transparent;
+    padding: 0;
+}
+
+/* ── Reloj ───────────────────────────────────────────────────────────────── */
+#clock {
+    background: rgba(49, 50, 68, 0.6);
+    color: #b4befe;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* ── CPU ─────────────────────────────────────────────────────────────────── */
+#cpu {
+    background: rgba(148, 226, 213, 0.08);
+    color: #94e2d5;
+}
+
+#cpu:hover {
+    background: rgba(148, 226, 213, 0.18);
+}
+
+/* ── RAM ─────────────────────────────────────────────────────────────────── */
+#memory {
+    background: rgba(166, 227, 161, 0.08);
+    color: #a6e3a1;
+}
+
+#memory:hover {
+    background: rgba(166, 227, 161, 0.18);
+}
+
+/* ── Volumen ─────────────────────────────────────────────────────────────── */
+#pulseaudio {
+    background: rgba(249, 226, 175, 0.08);
+    color: #f9e2af;
+}
+
+#pulseaudio:hover {
+    background: rgba(249, 226, 175, 0.18);
+}
+
+#pulseaudio.muted {
+    color: #6c7086;
+    background: rgba(108, 112, 134, 0.08);
+}
+
+/* ── Red ─────────────────────────────────────────────────────────────────── */
+#network {
+    background: rgba(137, 220, 235, 0.08);
+    color: #89dceb;
+}
+
+#network:hover {
+    background: rgba(137, 220, 235, 0.18);
+}
+
+#network.disconnected {
+    color: #f38ba8;
+    background: rgba(243, 139, 168, 0.08);
+}
+
+/* ── Bluetooth ───────────────────────────────────────────────────────────── */
+#bluetooth {
+    background: rgba(180, 190, 254, 0.08);
+    color: #b4befe;
+}
+
+#bluetooth:hover {
+    background: rgba(180, 190, 254, 0.18);
+}
+
+/* ── Batería ─────────────────────────────────────────────────────────────── */
+#custom-battery {
+    background: rgba(166, 227, 161, 0.08);
+    color: #a6e3a1;
+}
+
+#custom-battery.charged {
+    color: #a6e3a1;
+}
+
+#custom-battery.charging {
+    color: #f9e2af;
+    background: rgba(249, 226, 175, 0.08);
+}
+
+#custom-battery.low {
+    color: #fab387;
+    background: rgba(250, 179, 135, 0.12);
+}
+
+#custom-battery.critical {
+    color: #f38ba8;
+    background: rgba(243, 139, 168, 0.15);
+    animation: blink 1s ease-in-out infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+}
+
+/* ── Botón de apagado ────────────────────────────────────────────────────── */
+#custom-power {
+    background: rgba(243, 139, 168, 0.08);
+    color: #f38ba8;
+    font-size: 15px;
+    padding: 0 12px;
+    border-radius: 8px;
+}
+
+#custom-power:hover {
+    background: rgba(243, 139, 168, 0.25);
+}
+
+/* ── Tooltip global ──────────────────────────────────────────────────────── */
+tooltip {
+    background: #1e1e2e;
+    border: 1px solid rgba(180, 190, 254, 0.25);
+    border-radius: 8px;
+    color: #cdd6f4;
+    font-size: 12px;
+    padding: 4px 8px;
 }
