@@ -53,6 +53,11 @@ if ! command -v yay >/dev/null 2>&1; then
   rm -rf /tmp/yay
 fi
 
+# Audio (Pipewire) - Moved here to install before Waybar to avoid jack2 dependency
+msg "Installing Pipewire..."
+sudo pacman -S --noconfirm pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber
+systemctl --user enable --now pipewire pipewire-pulse wireplumber
+
 # Install Hyprland and related (use AUR git if preferred, but repo for stability)
 msg "Installing Hyprland and dependencies..."
 sudo pacman -S --noconfirm hyprland waybar alacritty rofi dunst swaybg swaylock swayidle wl-clipboard \
@@ -70,16 +75,6 @@ DisplayServer=wayland
 GreeterEnvironment=QT_WAYLAND_SHELL_INTEGRATION=layer-shell
 SDDM
 sudo chown root:root /etc/sddm.conf.d/wayland.conf
-
-# Audio (Pipewire)
-msg "Installing Pipewire..."
-# Handle jack2 conflict if present (common in fresh installs)
-if pacman -Qi jack2 &> /dev/null; then
-  msg "Removing conflicting jack2 package..."
-  sudo pacman -R --noconfirm jack2
-fi
-sudo pacman -S --noconfirm pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber
-systemctl --user enable --now pipewire pipewire-pulse wireplumber
 
 # Bluetooth
 msg "Installing Bluetooth..."
