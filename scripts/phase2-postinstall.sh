@@ -73,6 +73,11 @@ sudo chown root:root /etc/sddm.conf.d/wayland.conf
 
 # Audio (Pipewire)
 msg "Installing Pipewire..."
+# Handle jack2 conflict if present (common in fresh installs)
+if pacman -Qi jack2 &> /dev/null; then
+  msg "Removing conflicting jack2 package..."
+  sudo pacman -R --noconfirm jack2
+fi
 sudo pacman -S --noconfirm pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber
 systemctl --user enable --now pipewire pipewire-pulse wireplumber
 

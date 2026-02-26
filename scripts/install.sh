@@ -157,6 +157,10 @@ systemctl enable NetworkManager
 mkinitcpio -P
 EOF
 
+  if [[ ! -f /etc/vconsole.conf ]]; then
+    echo "KEYMAP=${DEFAULT_KEYMAP}" > /etc/vconsole.conf
+  fi
+
   # Unmount and reboot
   msg "Phase 1 complete. Unmounting..."
   msg "Unmount /mnt, Remove ISO and reboot. After login as ${USERNAME}, run: bash ${REPO_DIR}/scripts/phase2-install.sh"
