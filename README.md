@@ -14,15 +14,20 @@ arch-install/
 │   └── postinstall.sh
 └── configs/
     └── wayland/
-        ├── hyprland/
-        │   └── hyprland.conf
-        ├── waybar/
-        │   ├── config
-        │   └── style.css
         ├── alacritty/
         │   └── alacritty.toml
-        └── sddm.conf.d/
-            └── wayland.conf
+        ├── hypr/
+        │   └── hyprland.conf
+        ├── sddm.conf.d/
+        │   └── wayland.conf
+        ├── waybar/
+        │   ├── scripts/
+        │   │   └── battery.sh
+        │   ├── config
+        │   └── style.css
+        └── wlogout/
+            ├── layout
+            └── style.css
 ```
 
 Compatible Processors:
