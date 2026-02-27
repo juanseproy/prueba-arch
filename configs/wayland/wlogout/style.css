@@ -1,180 +1,179 @@
-/* ═══════════════════════════════════════════════════
-   wlogout — Estilo inspirado en Windows 7
-   Barra horizontal compacta centrada en pantalla
-   Paleta Catppuccin Mocha
-   ═══════════════════════════════════════════════════ */
+/* ==========================
+   wlogout — estilo HyDE-like
+   Inspirado en: wlog_style_1.png
+   ========================== */
 
 * {
-    font-family: "CaskaydiaCove Nerd Font", "Noto Sans", sans-serif;
-    background: none;
-    border: none;
-    box-shadow: none;
     box-sizing: border-box;
+    font-family: "CaskaydiaCove Nerd Font", "Noto Sans", sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-/* Fondo oscuro semitransparente: centro de la ventana */
+/* Ventana: fondo oscuro translúcido */
 window {
-    background: rgba(17, 17, 27, 0.85);
-
-    /* asegurar que el contenedor se centre en pantalla */
+    background: rgba(13, 10, 18, 0.75);
     display: flex;
     align-items: center;
     justify-content: center;
-    /* si el motor soporta altura completa */
     height: 100vh;
-    padding: 12px;
+    padding: 20px;
 }
 
-/* Contenedor: 4 botones en fila horizontal centrada */
+/* Contenedor de botones (fila) */
 box {
-    background: transparent;
-
-    /* layout de las columnas: fila centrada */
+    position: relative;            /* necesario para el panel grande (pseudo) */
     display: flex;
     flex-direction: row;
-    align-items: center;      /* centra verticalmente los botones */
-    justify-content: center;  /* centra la fila horizontalmente */
-    gap: 18px;                /* separación entre botones */
-    width: calc(100% - 40px);
-    max-width: 1400px;
-    padding: 6px;
+    align-items: center;           /* centra verticalmente los botones */
+    justify-content: flex-start;   /* empezamos desde la izquierda */
+    gap: 20px;
+    width: min(1200px, 96%);
+    padding: 18px 28px;
+    z-index: 0;
 }
 
-/* ── Botón base ─────────────────────────────────────── */
-/* reglas aquí son base visual; la regla box > button fuerza tamaño */
+/* Gran panel curvado detrás (se adapta a la anchura del box).
+   Ajusta `left` para mover el panel hacia la izquierda/derecha si hace falta. */
+box::before {
+    content: "";
+    position: absolute;
+    top: 18px;
+    bottom: 18px;
+    left: 40%;                     /* <-- controla dónde empieza el panel grande */
+    right: 12px;
+    background: rgba(40, 36, 50, 0.88);
+    border-radius: 32px;
+    box-shadow: 0 12px 30px rgba(6,6,8,0.6) inset, 0 8px 24px rgba(4,4,6,0.45);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Botón base (compacto) */
 button {
-    /* tamaño base (puede ser sobreescrito por box > button) */
+    position: relative;
+    z-index: 2;                    /* por encima del panel pseudo */
     width: 110px;
     height: 110px;
-    margin: 0;
-    padding: 8px;
-    box-sizing: border-box;
-
+    padding: 12px 10px 10px 10px;  /* poco padding: icono arriba, texto abajo */
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end; /* texto en la parte baja del botón */
+    justify-content: space-between;/* icono arriba, texto abajo */
     gap: 6px;
 
-    background-color: rgba(49, 50, 68, 0.92);
-    border-radius: 10px;
-    border: 1px solid rgba(69, 71, 90, 0.8);
-
-    color: #cdd6f4;
+    background: rgba(58, 54, 72, 0.95);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.03);
+    color: #e6e1ff;
     font-size: 12px;
     font-weight: 500;
-    line-height: 1;
+    text-align: center;
 
-    /* asegurar que el contenido no haga crecer el botón */
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-/* FORZAR tamaño fijo dentro del contenedor para evitar 'stretch' */
-box > button {
-    flex: 0 0 auto;               /* no crecer ni encoger dentro de box */
-    width: 110px !important;
-    height: 110px !important;
-
-    min-width: 110px !important;
-    min-height: 110px !important;
-    max-width: 140px !important;
-    max-height: 140px !important;
-}
-
-/* Icono como pseudo-elemento ::before (fallback más robusto) */
-button::before {
-    content: "";
-    display: block;
-    width: 36px;
-    height: 36px;
-    margin-bottom: 6px;           /* separa icono del texto */
     background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    /* si la imagen no carga, no rompe el layout */
+    background-position: center 18px; /* icono visualmente alto */
+    background-size: 40px;
+    transition: transform 220ms ease, background-color 180ms ease, box-shadow 180ms ease;
+    box-shadow: 0 6px 20px rgba(6,6,8,0.35);
 }
 
-/* Texto debajo del icono (si el motor renderiza texto como hijo) */
-button > label,           /* si wlogout usa <label> u otro, mantenerlo visible */
+/* Texto de etiqueta dentro del botón (si wlogout genera texto como hijo) */
+button > label,
 button > span,
 button > text {
     display: block;
     font-size: 12px;
     color: inherit;
-    margin: 0;
-    padding: 0;
+    margin-top: auto;
 }
 
-/* quitar outline nativo al enfocarse (pero mantener accesibilidad si quieres) */
-button:focus {
-    outline: none;
-}
-
-/* ── Hover genérico ──────────────────────────────────── */
+/* Hover / foco */
 button:hover {
-    border-color: rgba(180, 190, 254, 0.6);
-    background-color: rgba(69, 71, 90, 0.95);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(6,6,8,0.45);
+    background-color: rgba(78, 73, 95, 0.98);
 }
 
-/* ── Apagar — rojo ────────────────────────────────────── */
-#shutdown {
-    color: #f38ba8;
-    border-color: rgba(243, 139, 168, 0.3);
-}
-/* icono vía pseudo-elemento (fallback fiable) */
-#shutdown::before {
-    background-image: url("/usr/share/wlogout/icons/shutdown.png");
-    /* si quieres que el icono se vea con una tonalidad, podrías usar filter */
-    /* filter: brightness(0) invert(1);  */
-}
-#shutdown:hover {
-    background-color: rgba(243, 139, 168, 0.18);
-    border-color: #f38ba8;
-}
-
-/* ── Reiniciar — verde ────────────────────────────────── */
-#reboot {
-    color: #a6e3a1;
-    border-color: rgba(166, 227, 161, 0.3);
-}
-#reboot::before {
-    background-image: url("/usr/share/wlogout/icons/reboot.png");
-}
-#reboot:hover {
-    background-color: rgba(166, 227, 161, 0.18);
-    border-color: #a6e3a1;
-}
-
-/* ── Suspender — amarillo ─────────────────────────────── */
-#suspend {
-    color: #f9e2af;
-    border-color: rgba(249, 226, 175, 0.3);
-}
-#suspend::before {
-    background-image: url("/usr/share/wlogout/icons/suspend.png");
-}
-#suspend:hover {
-    background-color: rgba(249, 226, 175, 0.18);
-    border-color: #f9e2af;
-}
-
-/* ── Cerrar sesión — azul ─────────────────────────────── */
+/* ---------------------------
+   Botones que queremos mostrar
+   (usa rutas relativas absolutas según dónde estén los iconos)
+   --------------------------- */
 #logout {
-    color: #89b4fa;
-    border-color: rgba(137, 180, 250, 0.3);
-}
-#logout::before {
     background-image: url("/usr/share/wlogout/icons/logout.png");
+    color: #f0e7ff;
 }
-#logout:hover {
-    background-color: rgba(137, 180, 250, 0.18);
-    border-color: #89b4fa;
+#shutdown {
+    background-image: url("/usr/share/wlogout/icons/shutdown.png");
+    color: #ffd7dd;
+}
+#reboot {
+    background-image: url("/usr/share/wlogout/icons/reboot.png");
+    color: #d7ffe2;
 }
 
-/* -------------------- DEBUG helpers (descomentar para inspeccionar) --------------------
-box { outline: 2px dashed lime; }
-box > button { outline: 2px solid red; }
-#shutdown { outline: 3px dotted yellow; }
---------------------------------------------------------------------------------------- */
+/* ---------------------------
+   Botón central: SUSPEND (pill vertical)
+   - más alto, redondeado, solapa sobre el panel
+   - lo destacamos con mayor border-radius y sombra
+   --------------------------- */
+#suspend {
+    width: 140px;
+    height: 260px;                 /* pill vertical */
+    padding-top: 48px;             /* deja espacio para icono grande */
+    padding-bottom: 18px;
+    border-radius: 36px;
+    background-image: url("/usr/share/wlogout/icons/suspend.png");
+    background-position: center 48px;
+    background-size: 68px;
+    color: #fff3ff;
+    transform-origin: center;
+    box-shadow: 0 30px 60px rgba(6,6,8,0.55);
+    border: 1px solid rgba(255,255,255,0.04);
+    z-index: 6;                     /* siempre por encima */
+    margin-left: -10px;             /* ligero solapamiento visual */
+    margin-right: 6px;
+}
+
+/* Hover para el pill */
+#suspend:hover {
+    transform: translateY(-10px) scale(1.02);
+    background-color: rgba(140, 88, 130, 0.16);
+}
+
+/* ---------------------------
+   Ocultar los botones no deseados:
+   Lock (left) y Hibernate (dentro del panel grande)
+   --------------------------- */
+#lock,
+#hibernate {
+    display: none !important;
+}
+
+/* ---------------------------
+   Ajustes responsivos: si la pantalla queda pequeña,
+   reducimos medidas manteniendo la composición.
+   --------------------------- */
+@media (max-width: 1100px) {
+    box::before { left: 45%; }
+    #suspend { width: 120px; height: 220px; background-size: 56px; padding-top: 38px; }
+    button { width: 96px; height: 96px; background-size: 34px; }
+}
+
+@media (max-width: 720px) {
+    box {
+        gap: 12px;
+        padding: 12px;
+        width: 98%;
+        justify-content: center;
+    }
+    box::before { left: 38%; }
+    #suspend { width: 110px; height: 200px; background-size: 48px; padding-top: 32px; }
+    button { width: 86px; height: 86px; background-size: 30px; font-size: 11px; }
+}
+
+/* ---------------------------
+   DEBUG helpers (temporal): descomentar si necesitas ver contornos
+   --------------------------- */
+/* box { outline: 2px dashed lime; }
+   box::before { outline: 2px solid cyan; }
+   button { outline: 1px solid rgba(255,255,255,0.06); } */
