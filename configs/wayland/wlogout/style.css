@@ -1,46 +1,97 @@
+/* ═══════════════════════════════════════════════════
+   wlogout — Estilo inspirado en Windows 7
+   Barra horizontal compacta centrada en pantalla
+   Paleta Catppuccin Mocha
+   ═══════════════════════════════════════════════════ */
+
 * {
-    font-family: "CaskaydiaCove Nerd Font", monospace;
-    background-image: none;
+    font-family: "CaskaydiaCove Nerd Font", "Noto Sans", sans-serif;
+    background: none;
+    border: none;
     box-shadow: none;
 }
 
+/* Fondo oscuro semitransparente */
 window {
-    background-color: rgba(30, 30, 46, 0.90);
+    background: rgba(17, 17, 27, 0.85);
 }
 
-/* Contenedor de botones centrado */
+/* Contenedor: 4 botones en fila horizontal centrada */
+box {
+    background: transparent;
+}
+
+/* ── Botón base ─────────────────────────────────────── */
 button {
+    min-width:  110px;
+    min-height: 110px;
+    margin: 0 8px;
+    padding: 14px;
+
+    background-color: rgba(49, 50, 68, 0.92);
+    border-radius: 10px;
+    border: 1px solid rgba(69, 71, 90, 0.8);
+
     color: #cdd6f4;
-    background-color: rgba(49, 50, 68, 0.70);
-    border-style: solid;
-    border-width: 2px;
-    border-color: rgba(180, 190, 254, 0.15);
-    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+
     background-repeat: no-repeat;
-    background-position: center;
-    background-size: 40%;
-    margin: 10px;
-    font-size: 18px;
-    transition: background-color 0.2s ease;
+    background-position: center 28px;
+    background-size: 42px;
+
+    /* Texto bajo el icono */
+    padding-top: 80px;
 }
 
-button:focus,
-button:active,
+button:focus { outline: none; }
+
+/* ── Hover genérico ──────────────────────────────────── */
 button:hover {
-    background-color: rgba(203, 166, 247, 0.20);
-    border-color: #cba6f7;
-    color: #cba6f7;
-    outline-style: none;
+    border-color: rgba(180, 190, 254, 0.6);
+    background-color: rgba(69, 71, 90, 0.95);
 }
 
-/* Iconos individuales por botón usando background-image */
-#shutdown  { background-image: image(url("/usr/share/wlogout/icons/shutdown.png")); }
-#reboot    { background-image: image(url("/usr/share/wlogout/icons/reboot.png")); }
-#suspend   { background-image: image(url("/usr/share/wlogout/icons/suspend.png")); }
-#logout    { background-image: image(url("/usr/share/wlogout/icons/logout.png")); }
+/* ── Apagar — rojo ────────────────────────────────────── */
+#shutdown {
+    background-image: image(url("/usr/share/wlogout/icons/shutdown.png"));
+    color: #f38ba8;
+    border-color: rgba(243, 139, 168, 0.3);
+}
+#shutdown:hover {
+    background-color: rgba(243, 139, 168, 0.18);
+    border-color: #f38ba8;
+}
 
-/* Colores de acento por acción */
-#shutdown:hover  { background-color: rgba(243, 139, 168, 0.25); border-color: #f38ba8; color: #f38ba8; }
-#reboot:hover    { background-color: rgba(249, 226, 175, 0.25); border-color: #f9e2af; color: #f9e2af; }
-#suspend:hover   { background-color: rgba(137, 180, 250, 0.25); border-color: #89b4fa; color: #89b4fa; }
-#logout:hover    { background-color: rgba(166, 227, 161, 0.25); border-color: #a6e3a1; color: #a6e3a1; }
+/* ── Reiniciar — verde ────────────────────────────────── */
+#reboot {
+    background-image: image(url("/usr/share/wlogout/icons/reboot.png"));
+    color: #a6e3a1;
+    border-color: rgba(166, 227, 161, 0.3);
+}
+#reboot:hover {
+    background-color: rgba(166, 227, 161, 0.18);
+    border-color: #a6e3a1;
+}
+
+/* ── Suspender — amarillo ─────────────────────────────── */
+#suspend {
+    background-image: image(url("/usr/share/wlogout/icons/suspend.png"));
+    color: #f9e2af;
+    border-color: rgba(249, 226, 175, 0.3);
+}
+#suspend:hover {
+    background-color: rgba(249, 226, 175, 0.18);
+    border-color: #f9e2af;
+}
+
+/* ── Cerrar sesión — azul ─────────────────────────────── */
+#logout {
+    background-image: image(url("/usr/share/wlogout/icons/logout.png"));
+    color: #89b4fa;
+    border-color: rgba(137, 180, 250, 0.3);
+}
+#logout:hover {
+    background-color: rgba(137, 180, 250, 0.18);
+    border-color: #89b4fa;
+}

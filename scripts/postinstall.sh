@@ -79,7 +79,6 @@ sudo pacman -S --noconfirm --needed \
   qt5-wayland qt6-wayland \
   qt6-svg qt6-virtualkeyboard qt6-multimedia-ffmpeg \
   ttf-font-awesome \
-  noto-fonts noto-fonts-emoji \
   pamixer playerctl brightnessctl \
   bluez bluez-utils blueman \
   sddm || warn "Algunos paquetes fallaron; revisa la salida."

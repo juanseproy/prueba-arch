@@ -70,7 +70,7 @@
                 "󰕾"
             ]
         },
-        "on-click": "pavucontrol",
+        "on-click": "bash -c 'pavucontrol &'",
         "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",
         "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -5%",
         "scroll-step": 5
@@ -102,6 +102,6 @@
     "custom/power": {
         "format": "⏻",
         "tooltip": false,
-        "on-click": "wlogout"
+        "on-click": "wlogout -l ~/.config/wlogout/layout -c ~/.config/wlogout/style.css -b 4 -m 0"
     }
 }
