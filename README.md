@@ -19,6 +19,7 @@ arch-install/
         ├── hypr/
         │   └── hyprland.conf
         ├── sddm.conf.d/
+        │   ├── silent-custom.conf
         │   └── wayland.conf
         ├── waybar/
         │   ├── scripts/
