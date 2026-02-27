@@ -9,30 +9,51 @@
     background: none;
     border: none;
     box-shadow: none;
+    box-sizing: border-box;
 }
 
-/* Fondo oscuro semitransparente */
+/* Fondo oscuro semitransparente: centro de la ventana */
 window {
     background: rgba(17, 17, 27, 0.85);
+
+    /* asegurar que el contenedor se centre en pantalla */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* si el motor soporta altura completa */
+    height: 100vh;
+    padding: 12px;
 }
 
 /* Contenedor: 4 botones en fila horizontal centrada */
 box {
     background: transparent;
+
+    /* layout de las columnas: fila centrada */
+    display: flex;
+    flex-direction: row;
+    align-items: center;      /* centra verticalmente los botones */
+    justify-content: center;  /* centra la fila horizontalmente */
+    gap: 18px;                /* separación entre botones */
+    width: calc(100% - 40px);
+    max-width: 1400px;
+    padding: 6px;
 }
 
 /* ── Botón base ─────────────────────────────────────── */
+/* reglas aquí son base visual; la regla box > button fuerza tamaño */
 button {
+    /* tamaño base (puede ser sobreescrito por box > button) */
     width: 110px;
     height: 110px;
-    margin: 0 8px;
+    margin: 0;
     padding: 8px;
     box-sizing: border-box;
 
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end; /* texto en la parte baja del botón */
     gap: 6px;
 
     background-color: rgba(49, 50, 68, 0.92);
@@ -42,14 +63,54 @@ button {
     color: #cdd6f4;
     font-size: 12px;
     font-weight: 500;
+    line-height: 1;
 
-    /* iconos como background-image — la sintaxis 'url(...)' es la más fiable */
-    background-repeat: no-repeat;
-    background-position: center 12px;
-    background-size: 36px;
+    /* asegurar que el contenido no haga crecer el botón */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
-button:focus { outline: none; }
+/* FORZAR tamaño fijo dentro del contenedor para evitar 'stretch' */
+box > button {
+    flex: 0 0 auto;               /* no crecer ni encoger dentro de box */
+    width: 110px !important;
+    height: 110px !important;
+
+    min-width: 110px !important;
+    min-height: 110px !important;
+    max-width: 140px !important;
+    max-height: 140px !important;
+}
+
+/* Icono como pseudo-elemento ::before (fallback más robusto) */
+button::before {
+    content: "";
+    display: block;
+    width: 36px;
+    height: 36px;
+    margin-bottom: 6px;           /* separa icono del texto */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    /* si la imagen no carga, no rompe el layout */
+}
+
+/* Texto debajo del icono (si el motor renderiza texto como hijo) */
+button > label,           /* si wlogout usa <label> u otro, mantenerlo visible */
+button > span,
+button > text {
+    display: block;
+    font-size: 12px;
+    color: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+/* quitar outline nativo al enfocarse (pero mantener accesibilidad si quieres) */
+button:focus {
+    outline: none;
+}
 
 /* ── Hover genérico ──────────────────────────────────── */
 button:hover {
@@ -59,9 +120,14 @@ button:hover {
 
 /* ── Apagar — rojo ────────────────────────────────────── */
 #shutdown {
-    background-image: url("/usr/share/wlogout/icons/shutdown.png");
     color: #f38ba8;
     border-color: rgba(243, 139, 168, 0.3);
+}
+/* icono vía pseudo-elemento (fallback fiable) */
+#shutdown::before {
+    background-image: url("/usr/share/wlogout/icons/shutdown.png");
+    /* si quieres que el icono se vea con una tonalidad, podrías usar filter */
+    /* filter: brightness(0) invert(1);  */
 }
 #shutdown:hover {
     background-color: rgba(243, 139, 168, 0.18);
@@ -70,9 +136,11 @@ button:hover {
 
 /* ── Reiniciar — verde ────────────────────────────────── */
 #reboot {
-    background-image: url("/usr/share/wlogout/icons/reboot.png");
     color: #a6e3a1;
     border-color: rgba(166, 227, 161, 0.3);
+}
+#reboot::before {
+    background-image: url("/usr/share/wlogout/icons/reboot.png");
 }
 #reboot:hover {
     background-color: rgba(166, 227, 161, 0.18);
@@ -81,9 +149,11 @@ button:hover {
 
 /* ── Suspender — amarillo ─────────────────────────────── */
 #suspend {
-    background-image: url("/usr/share/wlogout/icons/suspend.png");
     color: #f9e2af;
     border-color: rgba(249, 226, 175, 0.3);
+}
+#suspend::before {
+    background-image: url("/usr/share/wlogout/icons/suspend.png");
 }
 #suspend:hover {
     background-color: rgba(249, 226, 175, 0.18);
@@ -92,11 +162,19 @@ button:hover {
 
 /* ── Cerrar sesión — azul ─────────────────────────────── */
 #logout {
-    background-image: url("/usr/share/wlogout/icons/logout.png");
     color: #89b4fa;
     border-color: rgba(137, 180, 250, 0.3);
+}
+#logout::before {
+    background-image: url("/usr/share/wlogout/icons/logout.png");
 }
 #logout:hover {
     background-color: rgba(137, 180, 250, 0.18);
     border-color: #89b4fa;
 }
+
+/* -------------------- DEBUG helpers (descomentar para inspeccionar) --------------------
+box { outline: 2px dashed lime; }
+box > button { outline: 2px solid red; }
+#shutdown { outline: 3px dotted yellow; }
+--------------------------------------------------------------------------------------- */
