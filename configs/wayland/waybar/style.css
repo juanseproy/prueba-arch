@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════
-   Waybar — Dark theme con acentos de color
-   Paleta: Catppuccin Mocha adaptada
+   Waybar — Glassmorphism · Catppuccin Mocha + Purple accent
+   Coherente con el estilo del wlogout y SilentSDDM
    ═══════════════════════════════════════════════════════════ */
 
 * {
@@ -9,23 +9,29 @@
     border: none;
     border-radius: 0;
     min-height: 0;
+    transition: all 0.2s ease;
 }
 
-/* ── Barra principal ─────────────────────────────────────────────────────── */
+/* ── Barra principal — glass oscuro ──────────────────────────────────────── */
 window#waybar {
-    background: rgba(30, 30, 46, 0.92);
+    background: rgba(18, 16, 32, 0.75);
     color: #cdd6f4;
-    border-radius: 12px;
-    border: 1px solid rgba(180, 190, 254, 0.15);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
-/* ── Módulos: padding base ───────────────────────────────────────────────── */
+/* ── Blur real en Hyprland: agregar en hyprland.conf:
+      layerrule = blur, waybar
+      layerrule = ignorezero, waybar        ─────────────────────────────── */
+
+/* ── Padding de secciones ────────────────────────────────────────────────── */
 .modules-left,
 .modules-center,
 .modules-right {
     padding: 0 6px;
 }
 
+/* ── Base para todos los módulos ─────────────────────────────────────────── */
 #workspaces,
 #window,
 #clock,
@@ -36,25 +42,29 @@ window#waybar {
 #bluetooth,
 #custom-battery,
 #custom-power {
-    padding: 0 10px;
+    padding: 0 12px;
     color: #cdd6f4;
-    border-radius: 8px;
-    margin: 4px 2px;
+    border-radius: 10px;
+    margin: 5px 2px;
 }
 
-/* ── Workspaces ──────────────────────────────────────────────────────────── */
+/* ── Workspaces — glass sutil ────────────────────────────────────────────── */
 #workspaces {
-    background: rgba(49, 50, 68, 0.6);
-    padding: 0 4px;
+    background: rgba(40, 36, 60, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 0 6px;
+    border-radius: 10px;
+    margin: 5px 2px;
 }
 
 #workspaces button {
     padding: 0 8px;
     color: #6c7086;
     background: transparent;
-    border-radius: 6px;
+    border-radius: 7px;
     margin: 2px 1px;
     font-size: 14px;
+    border: none;
 }
 
 #workspaces button:hover {
@@ -64,45 +74,56 @@ window#waybar {
 
 #workspaces button.active {
     color: #cba6f7;
-    background: rgba(203, 166, 247, 0.15);
+    background: rgba(130, 90, 160, 0.35);
     border-bottom: 2px solid #cba6f7;
 }
 
 #workspaces button.urgent {
     color: #f38ba8;
-    background: rgba(243, 139, 168, 0.15);
+    background: rgba(243, 139, 168, 0.2);
 }
 
 /* ── Título de ventana ───────────────────────────────────────────────────── */
-/* NOTA: :empty no es válido en GTK CSS — eliminado */
 #window {
-    color: #a6adc8;
+    color: rgba(205, 214, 244, 0.55);
     background: transparent;
     font-style: italic;
 }
 
-/* ── Reloj ───────────────────────────────────────────────────────────────── */
+/* ── Reloj — protagonista del centro ────────────────────────────────────── */
 #clock {
-    background: rgba(49, 50, 68, 0.6);
+    background: rgba(40, 36, 60, 0.65);
+    border: 1px solid rgba(180, 190, 254, 0.12);
     color: #b4befe;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.5px;
+    padding: 0 16px;
+    border-radius: 10px;
+    margin: 5px 4px;
 }
 
-/* ── CPU ─────────────────────────────────────────────────────────────────── */
+/* ── CPU — flanquea el reloj ─────────────────────────────────────────────── */
 #cpu {
     background: rgba(148, 226, 213, 0.08);
+    border: 1px solid rgba(148, 226, 213, 0.1);
     color: #94e2d5;
+    border-radius: 10px 4px 4px 10px; /* redondo izquierdo, plano derecho */
+    margin: 5px 0 5px 2px;
+    padding: 0 12px;
 }
 
 #cpu:hover {
     background: rgba(148, 226, 213, 0.18);
 }
 
-/* ── RAM ─────────────────────────────────────────────────────────────────── */
+/* ── Memory — flanquea el reloj ──────────────────────────────────────────── */
 #memory {
     background: rgba(166, 227, 161, 0.08);
+    border: 1px solid rgba(166, 227, 161, 0.1);
     color: #a6e3a1;
+    border-radius: 4px 10px 10px 4px; /* plano izquierdo, redondo derecho */
+    margin: 5px 2px 5px 0;
+    padding: 0 12px;
 }
 
 #memory:hover {
@@ -112,6 +133,7 @@ window#waybar {
 /* ── Volumen ─────────────────────────────────────────────────────────────── */
 #pulseaudio {
     background: rgba(249, 226, 175, 0.08);
+    border: 1px solid rgba(249, 226, 175, 0.1);
     color: #f9e2af;
 }
 
@@ -122,11 +144,13 @@ window#waybar {
 #pulseaudio.muted {
     color: #6c7086;
     background: rgba(108, 112, 134, 0.08);
+    border-color: rgba(108, 112, 134, 0.1);
 }
 
 /* ── Red ─────────────────────────────────────────────────────────────────── */
 #network {
     background: rgba(137, 220, 235, 0.08);
+    border: 1px solid rgba(137, 220, 235, 0.1);
     color: #89dceb;
 }
 
@@ -137,11 +161,13 @@ window#waybar {
 #network.disconnected {
     color: #f38ba8;
     background: rgba(243, 139, 168, 0.08);
+    border-color: rgba(243, 139, 168, 0.1);
 }
 
 /* ── Bluetooth ───────────────────────────────────────────────────────────── */
 #bluetooth {
     background: rgba(180, 190, 254, 0.08);
+    border: 1px solid rgba(180, 190, 254, 0.1);
     color: #b4befe;
 }
 
@@ -152,6 +178,7 @@ window#waybar {
 /* ── Batería ─────────────────────────────────────────────────────────────── */
 #custom-battery {
     background: rgba(166, 227, 161, 0.08);
+    border: 1px solid rgba(166, 227, 161, 0.1);
     color: #a6e3a1;
 }
 
@@ -162,38 +189,43 @@ window#waybar {
 #custom-battery.charging {
     color: #f9e2af;
     background: rgba(249, 226, 175, 0.08);
+    border-color: rgba(249, 226, 175, 0.1);
 }
 
 #custom-battery.low {
     color: #fab387;
-    background: rgba(250, 179, 135, 0.12);
+    background: rgba(250, 179, 135, 0.1);
+    border-color: rgba(250, 179, 135, 0.12);
 }
 
-/* critical: GTK soporta animaciones básicas pero es inconsistente;
-   usamos solo color rojo para máxima compatibilidad */
 #custom-battery.critical {
     color: #f38ba8;
-    background: rgba(243, 139, 168, 0.15);
+    background: rgba(243, 139, 168, 0.12);
+    border-color: rgba(243, 139, 168, 0.15);
 }
 
-/* ── Botón de apagado ────────────────────────────────────────────────────── */
+/* ── Botón power — acento púrpura coherente con wlogout ─────────────────── */
 #custom-power {
-    background: rgba(243, 139, 168, 0.08);
-    color: #f38ba8;
+    background: rgba(130, 90, 160, 0.3);
+    border: 1px solid rgba(203, 166, 247, 0.2);
+    color: #cba6f7;
     font-size: 15px;
-    padding: 0 12px;
-    border-radius: 8px;
+    padding: 0 14px;
+    border-radius: 10px;
+    margin: 5px 2px;
 }
 
 #custom-power:hover {
-    background: rgba(243, 139, 168, 0.25);
+    background: rgba(130, 90, 160, 0.55);
+    border-color: rgba(203, 166, 247, 0.35);
+    color: #ffffff;
 }
 
-/* ── Tooltip global ──────────────────────────────────────────────────────── */
+/* ── Tooltips ────────────────────────────────────────────────────────────── */
 tooltip {
-    background: #1e1e2e;
-    border: 1px solid rgba(180, 190, 254, 0.25);
-    border-radius: 8px;
+    background: rgba(18, 16, 32, 0.92);
+    border: 1px solid rgba(180, 190, 254, 0.2);
+    border-radius: 10px;
     color: #cdd6f4;
     font-size: 12px;
     padding: 4px 8px;
