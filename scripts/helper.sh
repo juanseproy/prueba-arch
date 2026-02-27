@@ -1,9 +1,8 @@
-msg "Creando directorios de config..."
-mkdir -p \
-  "${HOME}/.config/hypr" \
-  "${HOME}/.config/waybar/scripts" \
-  "${HOME}/.config/alacritty" \
-  "${HOME}/.config/wlogout"
+REPO_DIR="/home/prueba-arch"
+REPO_DIR="/home/prueba-arch"
+CONFIGS="${REPO_DIR}/configs/wayland"
+
+msg()  { printf "\e[1;32m[+]\e[0m %s\n" "$*"; }
 
 msg "Copiando configs..."
 cp "${CONFIGS}/hypr/hyprland.conf"           "${HOME}/.config/hypr/hyprland.conf"
