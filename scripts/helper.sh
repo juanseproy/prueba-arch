@@ -1,6 +1,6 @@
 REPO_DIR="/home/prueba-arch"
-REPO_DIR="/home/prueba-arch"
 CONFIGS="${REPO_DIR}/configs/wayland"
+HOME="/home/jufedev"
 
 msg()  { printf "\e[1;32m[+]\e[0m %s\n" "$*"; }
 
