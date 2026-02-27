@@ -1,8 +1,7 @@
 * {
     background-image: none;
     font-family: sans-serif;
-    font-size: 12px;
-    transition: 200ms;
+    transition: all 0.3s cubic-bezier(0.55, 0.0, 0.28, 1.682);
 }
 
 window {
@@ -10,40 +9,41 @@ window {
 }
 
 button {
-    background-color: rgba(43, 40, 61, 0.7); /* Morado oscuro semitransparente */
+    background-color: rgba(43, 40, 61, 0.8); /* Morado oscuro semitransparente base */
     color: #ffffff;
     border: none;
     box-shadow: none;
     text-align: center;
-    margin: 0;
-    padding: 0 30px;
+    /* Los márgenes superior e inferior dan espacio para que el hover crezca */
+    margin: 30px 0; 
+    padding: 20px 30px;
     min-width: 120px;
-    min-height: 80px;
+    min-height: 100px;
 }
 
 button:focus, button:active {
-    background-color: rgba(43, 40, 61, 0.7);
+    background-color: rgba(43, 40, 61, 0.8);
 }
 
-button:hover {
-    background-color: rgba(76, 74, 98, 0.8); /* Hover más claro */
-    border-radius: 16px;
-    margin: 0 8px; /* Hace que "crezca" separándose ligeramente */
-    transition: all 0.3s cubic-bezier(0.55, 0.0, 0.28, 1.682);
+/* Efecto de "Píldora" para los extremos */
+#lock {
+    border-radius: 24px 0 0 24px; /* Redondeado izquierdo para el primer botón */
 }
 
-#shutdown {
-    border-radius: 16px 0 0 16px; /* Redondeado izquierdo */
+#logout, #suspend, #shutdown {
+    border-radius: 0; /* Cuadrados en el centro */
 }
 
 #reboot {
-    border-radius: 0;
+    border-radius: 0 24px 24px 0; /* Redondeado derecho para el último botón */
 }
 
-#suspend {
-    border-radius: 0;
-}
-
-#logout {
-    border-radius: 0 16px 16px 0; /* Redondeado derecho */
+/* Efecto Pop-out al pasar el mouse */
+button:hover {
+    background-color: rgba(144, 104, 136, 0.9); /* Tono rosado/morado claro de la imagen */
+    border-radius: 24px; /* Se vuelve completamente redondeado */
+    /* Reduce el margen vertical para hacerlo más alto, y usa negativo horizontal para separarlo/superponerlo */
+    margin: 10px -8px; 
+    min-height: 140px;
+    z-index: 10;
 }
