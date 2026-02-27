@@ -18,7 +18,7 @@
 }
 {
     "label": "logout",
-    "action": "loginctl terminate-user $USER",
+    "action": "hyprctl dispatch exit",
     "text": "Salir",
     "keybind": "e"
 }
