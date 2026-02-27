@@ -162,9 +162,9 @@ SessionDir=/usr/share/wayland-sessions
 SDDMEOF
 
 # Config personalizado de SilentSDDM
-# El archivo silent-custom.conf debe existir en configs/wayland/sddm.conf.d/
+# El archivo silent-custom.conf debe existir en configs/wayland/sddm-theme/
 SILENT_DIR="/usr/share/sddm/themes/silent"
-SILENT_CONF="${CONFIGS}/sddm.conf.d/silent-custom.conf"
+SILENT_CONF="${CONFIGS}/sddm-theme/silent-custom.conf"
 
 if [[ -d "${SILENT_DIR}" ]]; then
   if [[ -f "${SILENT_CONF}" ]]; then
@@ -175,7 +175,7 @@ if [[ -d "${SILENT_DIR}" ]]; then
     msg "SilentSDDM configurado con silent-custom.conf"
   else
     warn "Falta ${SILENT_CONF} en el repo. SilentSDDM usara su config default."
-    warn "Crea configs/wayland/sddm.conf.d/silent-custom.conf y vuelve a correr este bloque."
+    warn "Crea configs/wayland/sddm-theme/silent-custom.conf y vuelve a correr este bloque."
   fi
 else
   warn "SilentSDDM no instalado en ${SILENT_DIR}. Instala sddm-silent-theme y configura manualmente."
