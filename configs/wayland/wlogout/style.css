@@ -1,0 +1,46 @@
+* {
+    font-family: "CaskaydiaCove Nerd Font", monospace;
+    background-image: none;
+    box-shadow: none;
+}
+
+window {
+    background-color: rgba(30, 30, 46, 0.90);
+}
+
+/* Contenedor de botones centrado */
+button {
+    color: #cdd6f4;
+    background-color: rgba(49, 50, 68, 0.70);
+    border-style: solid;
+    border-width: 2px;
+    border-color: rgba(180, 190, 254, 0.15);
+    border-radius: 16px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 40%;
+    margin: 10px;
+    font-size: 18px;
+    transition: background-color 0.2s ease;
+}
+
+button:focus,
+button:active,
+button:hover {
+    background-color: rgba(203, 166, 247, 0.20);
+    border-color: #cba6f7;
+    color: #cba6f7;
+    outline-style: none;
+}
+
+/* Iconos individuales por botón usando background-image */
+#shutdown  { background-image: image(url("/usr/share/wlogout/icons/shutdown.png")); }
+#reboot    { background-image: image(url("/usr/share/wlogout/icons/reboot.png")); }
+#suspend   { background-image: image(url("/usr/share/wlogout/icons/suspend.png")); }
+#logout    { background-image: image(url("/usr/share/wlogout/icons/logout.png")); }
+
+/* Colores de acento por acción */
+#shutdown:hover  { background-color: rgba(243, 139, 168, 0.25); border-color: #f38ba8; color: #f38ba8; }
+#reboot:hover    { background-color: rgba(249, 226, 175, 0.25); border-color: #f9e2af; color: #f9e2af; }
+#suspend:hover   { background-color: rgba(137, 180, 250, 0.25); border-color: #89b4fa; color: #89b4fa; }
+#logout:hover    { background-color: rgba(166, 227, 161, 0.25); border-color: #a6e3a1; color: #a6e3a1; }

@@ -107,7 +107,7 @@ sudo systemctl enable bluetooth
 
 # ─── Utilidades ──────────────────────────────────────────────────────────────
 msg "Instalando utilidades (audio/brillo/media)..."
-sudo pacman -S --noconfirm --needed pamixer playerctl brightnessctl
+sudo pacman -S --noconfirm --needed pamixer playerctl brightnessctl wlogout pavucontrol
 
 # ─── Brave Browser ───────────────────────────────────────────────────────────
 msg "Instalando Brave Browser (AUR)..."

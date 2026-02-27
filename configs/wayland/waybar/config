@@ -71,20 +71,25 @@
             ]
         },
         "on-click": "pavucontrol",
+        "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",
+        "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -5%",
         "scroll-step": 5
     },
     "network": {
         "format-wifi": "  {essid} ({signalStrength}%)",
-        "format-ethernet": "󰈀  Ethernet",
-        "format-disconnected": "󰖪  Sin conexión",
-        "tooltip-format-wifi": "{ipaddr} — {frequency} GHz\n{bandwidthDownBytes} ↓  {bandwidthUpBytes} ↑",
+        "format-ethernet": "󰈀 Ethernet",
+        "format-disconnected": "󰖪 Sin conexión",
+        "tooltip-format-wifi": "{ipaddr}\n{bandwidthDownBytes} ↓  {bandwidthUpBytes} ↑",
         "interval": 5
     },
     "bluetooth": {
         "format": "󰂯",
         "format-disabled": "󰂲",
+        "format-off": "󰂲",
         "format-connected": "󰂱  {device_alias}",
-        "tooltip-format": "{controller_alias} — {controller_address}\n{num_connections} dispositivo(s) conectado(s)",
+        "tooltip-format": "{controller_alias}\n{num_connections} dispositivo(s)",
+        "tooltip-format-off": "Bluetooth desactivado",
+        "tooltip-format-disabled": "Sin adaptador Bluetooth",
         "on-click": "blueman-manager"
     },
     "custom/battery": {
@@ -97,6 +102,6 @@
     "custom/power": {
         "format": "⏻",
         "tooltip": false,
-        "on-click": "bash -c 'echo -e \"Apagar\nReiniciar\nSuspender\nCerrar sesión\" | rofi -dmenu -p \"Power\" | xargs -I{} bash -c \"grep -q Apagar <<< {} && systemctl poweroff; grep -q Reiniciar <<< {} && systemctl reboot; grep -q Suspender <<< {} && systemctl suspend; grep -q Cerrar <<< {} && hyprctl dispatch exit\"'"
+        "on-click": "wlogout"
     }
 }
