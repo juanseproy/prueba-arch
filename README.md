@@ -18,6 +18,8 @@ arch-install/
         │   └── alacritty.toml
         ├── hypr/
         │   └── hyprland.conf
+        ├── sddm-theme/
+        │   ├── custom.conf
         ├── sddm.conf.d/
         │   ├── silent-custom.conf
         │   └── wayland.conf
@@ -35,3 +37,8 @@ arch-install/
 Compatible Processors:
 - i3-2330M
 - Ryzen 7 5700G
+
+
+Other Repos (credits):
+- https://github.com/uiriansan/SilentSDDM
+- https://github.com/HyDE-Project/HyDE?tab=readme-ov-file

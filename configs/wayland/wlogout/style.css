@@ -9,41 +9,51 @@ window {
 }
 
 button {
-    background-color: rgba(43, 40, 61, 0.8); /* Morado oscuro semitransparente base */
-    color: #ffffff;
-    border: none;
+    background-color: rgba(25, 22, 45, 0.72);
+    color: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     box-shadow: none;
     text-align: center;
-    /* Los márgenes superior e inferior dan espacio para que el hover crezca */
-    margin: 30px 0; 
+    /* Margen vertical: deja espacio para que el hover "crezca" hacia arriba */
+    margin: 30px 0;
     padding: 20px 30px;
     min-width: 120px;
     min-height: 100px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 button:focus, button:active {
-    background-color: rgba(43, 40, 61, 0.8);
+    background-color: rgba(25, 22, 45, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-/* Efecto de "Píldora" para los extremos */
+/* ── Forma de píldora en el conjunto ── */
 #lock {
-    border-radius: 24px 0 0 24px; /* Redondeado izquierdo para el primer botón */
+    border-radius: 20px 0 0 20px;
 }
 
 #logout, #suspend, #shutdown {
-    border-radius: 0; /* Cuadrados en el centro */
+    border-radius: 0;
 }
 
 #reboot {
-    border-radius: 0 24px 24px 0; /* Redondeado derecho para el último botón */
+    border-radius: 0 20px 20px 0;
 }
 
-/* Efecto Pop-out al pasar el mouse */
+/* ── Pop-out glassmorphism al hover ── */
 button:hover {
-    background-color: rgba(144, 104, 136, 0.9); /* Tono rosado/morado claro de la imagen */
-    border-radius: 24px; /* Se vuelve completamente redondeado */
-    /* Reduce el margen vertical para hacerlo más alto, y usa negativo horizontal para separarlo/superponerlo */
-    margin: 10px -8px; 
-    min-height: 140px;
+    /* Tono lavanda/rosa translúcido como en la imagen */
+    background-color: rgba(130, 90, 160, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 20px;
+    /* Sube y agranda el botón hovered */
+    margin: 8px -10px;
+    min-height: 148px;
     z-index: 10;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    /* Sombra suave para dar profundidad */
+    box-shadow: 0 8px 32px rgba(100, 60, 140, 0.35);
+    color: #ffffff;
 }
