@@ -1,5 +1,4 @@
 * {
-    background-image: none;
     font-family: sans-serif;
     transition: all 0.3s cubic-bezier(0.55, 0.0, 0.28, 1.682);
 }
@@ -10,13 +9,15 @@ window {
 
 button {
     background-color: rgba(25, 22, 45, 0.72);
+    background-repeat: no-repeat;
+    background-position: center 30%;
+    background-size: 40px 40px;
     color: rgba(255, 255, 255, 0.85);
     border: 1px solid rgba(255, 255, 255, 0.06);
     box-shadow: none;
     text-align: center;
-    /* Margen vertical: deja espacio para que el hover "crezca" hacia arriba */
+    padding-top: 90px; /* empuja el texto debajo del ícono */
     margin: 30px 0;
-    padding: 20px 30px;
     min-width: 120px;
     min-height: 100px;
     backdrop-filter: blur(16px);
@@ -27,6 +28,13 @@ button:focus, button:active {
     background-color: rgba(25, 22, 45, 0.72);
     border: 1px solid rgba(255, 255, 255, 0.06);
 }
+
+/* ── Íconos SVG desde wlogout ── */
+#lock     { background-image: url("/usr/share/wlogout/icons/lock.png"); }
+#logout   { background-image: url("/usr/share/wlogout/icons/logout.png"); }
+#suspend  { background-image: url("/usr/share/wlogout/icons/suspend.png"); }
+#shutdown { background-image: url("/usr/share/wlogout/icons/shutdown.png"); }
+#reboot   { background-image: url("/usr/share/wlogout/icons/reboot.png"); }
 
 /* ── Forma de píldora en el conjunto ── */
 #lock {
@@ -43,17 +51,14 @@ button:focus, button:active {
 
 /* ── Pop-out glassmorphism al hover ── */
 button:hover {
-    /* Tono lavanda/rosa translúcido como en la imagen */
     background-color: rgba(130, 90, 160, 0.55);
     border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 20px;
-    /* Sube y agranda el botón hovered */
     margin: 8px -10px;
     min-height: 148px;
     z-index: 10;
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    /* Sombra suave para dar profundidad */
     box-shadow: 0 8px 32px rgba(100, 60, 140, 0.35);
     color: #ffffff;
 }
