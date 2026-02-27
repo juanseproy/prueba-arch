@@ -1,28 +1,28 @@
 layer = overlay
 buttons_per_row = 4
-column_spacing = 30
+column_spacing = 0
 row_spacing = 0
 halign = center
-valign = center
-fixed-width = 800
-fixed-height = 150
+valign = bottom
+fixed-width = 600
+fixed-height = 80
 
 [shutdown]
 action = systemctl poweroff
-text = <span font_family="Font Awesome 6 Free Solid" size="40000"></span>\n<span size="14000">Apagar</span>
+text = <span font_family="Font Awesome 6 Free Solid" size="24000"></span>\n<span size="12000">Apagar</span>
 keybind = s
 
 [reboot]
 action = systemctl reboot
-text = <span font_family="Font Awesome 6 Free Solid" size="40000"></span>\n<span size="14000">Reiniciar</span>
+text = <span font_family="Font Awesome 6 Free Solid" size="24000"></span>\n<span size="12000">Reiniciar</span>
 keybind = r
 
 [suspend]
 action = systemctl suspend
-text = <span font_family="Font Awesome 6 Free Solid" size="40000"></span>\n<span size="14000">Suspender</span>
+text = <span font_family="Font Awesome 6 Free Solid" size="24000"></span>\n<span size="12000">Suspender</span>
 keybind = u
 
 [logout]
 action = hyprctl dispatch exit
-text = <span font_family="Font Awesome 6 Free Solid" size="40000"></span>\n<span size="14000">Salir</span>
+text = <span font_family="Font Awesome 6 Free Solid" size="24000"></span>\n<span size="12000">Salir</span>
 keybind = e
