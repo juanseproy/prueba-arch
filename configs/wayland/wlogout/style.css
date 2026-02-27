@@ -1,203 +1,36 @@
-@define-color bar-bg rgba(31, 35, 40, 0.95);
+/* test-working-style.css - sin variables ni @define-color, directo */
+* { box-sizing: border-box; font-family: "Noto Sans", sans-serif; }
+window { background: rgba(13,10,18,0.75); display:flex; align-items:center; justify-content:center; height:100vh; padding:12px; }
+box { display:flex; flex-direction:row; align-items:center; justify-content:center; gap:18px; padding:8px; width:min(1200px,96%); position:relative; }
 
-@define-color main-bg #101419;
-@define-color main-fg #93cee9;
+/* evitar stretch */
+box > button { flex:0 0 auto; width:110px; height:110px; min-width:110px; min-height:110px; }
 
-@define-color wb-act-bg #93cee9;
-@define-color wb-act-fg #1f2328;
-
-@define-color wb-hvr-bg #93cee9;
-@define-color wb-hvr-fg #1f2328;
-
-* {
-    background-image: none;
-    font-size: ${fntSize}px;
-    box-sizing: border-box;
-}
-
-/* Centrado de la ventana */
-window {
-    background-color: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    padding: 12px;
-}
-
-/* Contenedor de botones: fila centrada y evita que los hijos hagan stretch */
-box {
-    display: flex;
-    flex-direction: row;
-    align-items: center;      /* centro vertical de los botones */
-    justify-content: center;  /* centrado horizontal */
-    gap: 18px;
-    padding: 8px;
-    width: min(1200px, 96%);
-    max-width: 1400px;
-    position: relative;
-}
-
-/* Evitar estiramiento: obliga a los botones a mantener tamaño fijo dentro de box */
-box > button {
-    flex: 0 0 auto;            /* no crecer ni encoger */
-    width: 110px;
-    height: 110px;
-    min-width: 110px;
-    min-height: 110px;
-    max-width: 140px;
-    max-height: 140px;
-    margin: ${mgn}px 0px ${mgn}px 0px;
-}
-
-/* ── Botón base (compacto) ───────────────────────────────────── */
 button {
-    color: ${BtnCol};
-    background-color: @main-bg;
-    outline-style: none;
-    border: none;
-    border-width: 0px;
-    background-repeat: no-repeat;
-    background-position: center 18px; /* icono en la parte superior visualmente */
-    background-size: 36px;            /* tamaño de icono en px (más consistente) */
-    border-radius: ${button_rad}px;
-    box-shadow: none;
-    text-shadow: none;
-    padding: 8px 10px 10px 10px;      /* poco padding: icono arriba, etiqueta abajo */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;       /* texto en la parte inferior */
-    align-items: center;
-    gap: 6px;
-    transition: all 220ms cubic-bezier(.55,0.0,.28,1.682);
-    animation: gradient_f 20s ease-in infinite;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  background-color: #101419;
+  color: #93cee9;
+  background-repeat:no-repeat;
+  background-position:center 18px;
+  background-size:36px;
+  padding:8px 10px 10px 10px;
+  display:flex; flex-direction:column; justify-content:flex-end; align-items:center;
+  border-radius:8px;
+  transition: all 220ms ease;
 }
 
-/* focus / hover */
-button:focus {
-    background-color: @wb-act-bg;
-    background-size: 44px;
-}
+/* ocultar lock y hibernate */
+#lock, #hibernate { display:none !important; }
 
-button:hover {
-    background-color: @wb-hvr-bg;
-    background-size: 48px;
-    border-radius: ${active_rad}px;
-    animation: gradient_f 20s ease-in infinite;
-    transform: translateY(-6px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.35);
-}
+/* rutas absolutas: cambia 'tuusuario' por tu nombre */
+#logout { background-image: url("/home/tuusuario/.config/wlogout/icons/logout_blue.png"), url("/usr/share/wlogout/icons/logout.png"); }
+#shutdown { background-image: url("/home/tuusuario/.config/wlogout/icons/shutdown_blue.png"), url("/usr/share/wlogout/icons/shutdown.png"); }
+#reboot { background-image: url("/home/tuusuario/.config/wlogout/icons/reboot_blue.png"), url("/usr/share/wlogout/icons/reboot.png"); }
 
-/* Hover margins (mantengo tu lógica de variables) */
-button:hover#logout    { border-radius: ${active_rad}px; margin: ${hvr}px 0px ${hvr}px 0px; }
-button:hover#suspend   { border-radius: ${active_rad}px; margin: ${hvr}px 0px ${hvr}px 0px; }
-button:hover#shutdown  { border-radius: ${active_rad}px; margin: ${hvr}px 0px ${hvr}px 0px; }
-button:hover#hibernate { border-radius: ${active_rad}px; margin: ${hvr}px 0px ${hvr}px 0px; }
-button:hover#reboot    { border-radius: ${active_rad}px; margin: ${hvr}px ${mgn}px ${hvr}px 0px; }
-
-/* -----------------------------
-   Rutas de iconos: uso url(...) con fallback por orden
-   (el primer url que exista se renderiza encima)
-   ----------------------------- */
-/* Ocultar lock y hibernate (según tu petición) */
-#lock,
-#hibernate {
-    display: none !important;
-}
-
-/* logout, shutdown, reboot y suspend con iconos seguros */
-#logout {
-    /* fallback order: user config -> /usr/share -> /usr/local/share */
-    background-image:
-        url("$HOME/.config/wlogout/icons/logout_${BtnCol}.png"),
-        url("/usr/share/wlogout/icons/logout.png"),
-        url("/usr/local/share/wlogout/icons/logout.png");
-    border-radius: 0px;
-    margin: ${mgn}px 0px ${mgn}px 0px;
-}
-
-#shutdown {
-    background-image:
-        url("$HOME/.config/wlogout/icons/shutdown_${BtnCol}.png"),
-        url("/usr/share/wlogout/icons/shutdown.png"),
-        url("/usr/local/share/wlogout/icons/shutdown.png");
-    border-radius: 0px;
-    margin: ${mgn}px 0px ${mgn}px 0px;
-}
-
-#reboot {
-    background-image:
-        url("$HOME/.config/wlogout/icons/reboot_${BtnCol}.png"),
-        url("/usr/share/wlogout/icons/reboot.png"),
-        url("/usr/local/share/wlogout/icons/reboot.png");
-    border-radius: 0px ${button_rad}px ${button_rad}px 0px;
-    margin: ${mgn}px ${mgn}px ${mgn}px 0px;
-}
-
-/* ── Botón central: SUSPEND como pill vertical (destacado) ── */
-/* compactamos los demás y hacemos que suspend destaque */
+/* pill central */
 #suspend {
-    /* pill */
-    width: 140px;
-    height: 260px;
-    padding-top: 48px; /* espacio para el icono grande (controlable) */
-    padding-bottom: 14px;
-    border-radius: 36px;
-    margin: ${mgn}px 0px ${mgn}px 0px;
-    background-image:
-        url("$HOME/.config/wlogout/icons/suspend_${BtnCol}.png"),
-        url("/usr/share/wlogout/icons/suspend.png"),
-        url("/usr/local/share/wlogout/icons/suspend.png");
-    background-position: center 48px;
-    background-size: 72px;
-    color: ${BtnCol};
-    box-shadow: 0 24px 48px rgba(0,0,0,0.55);
-    z-index: 10;
-    transform-origin: center;
-    /* ligero solapamiento visual si quieres (ajusta) */
-    margin-left: -8px;
+  width:140px; height:260px; padding-top:48px; padding-bottom:14px;
+  border-radius:36px; margin-left:-8px;
+  background-image: url("/home/tuusuario/.config/wlogout/icons/suspend_blue.png"), url("/usr/share/wlogout/icons/suspend.png");
+  background-position:center 48px; background-size:72px;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.55); z-index:10;
 }
-
-/* Hover específico para suspend (más acusado) */
-button:hover#suspend {
-    transform: translateY(-10px) scale(1.02);
-    background-size: 80px;
-}
-
-/* Si necesitas fallback robusto, podemos usar pseudo-elemento para iconos:
-   (descomentarlo en caso de que background-image no sea aplicado por tu motor)
-button::before {
-    content: "";
-    display: block;
-    width: 36px;
-    height: 36px;
-    margin-bottom: 6px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-}
-*/
-
-/* --------------------------------
-   Responsive: reducimos tamaños en pantallas pequeñas
-   -------------------------------- */
-@media (max-width: 1100px) {
-    box { gap: 12px; padding: 6px; }
-    box > button { width: 96px; height: 96px; min-width: 96px; min-height: 96px; }
-    #suspend { width: 120px; height: 220px; padding-top: 36px; background-size: 58px; }
-    button { background-size: 32px; }
-}
-
-@media (max-width: 720px) {
-    box { gap: 10px; padding: 8px; width: 98%; }
-    box > button { width: 86px; height: 86px; min-width: 86px; min-height: 86px; }
-    #suspend { width: 110px; height: 200px; padding-top: 30px; background-size: 48px; }
-    button { background-size: 28px; font-size: ${fntSize - 1}px; }
-}
-
-/* Helpers de debug (descomentar para inspeccionar) */
-/* box { outline: 2px dashed lime; }
-   box > button { outline: 2px solid red; } */

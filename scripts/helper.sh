@@ -1,36 +1,18 @@
-/* test-working-style.css - sin variables ni @define-color, directo */
-* { box-sizing: border-box; font-family: "Noto Sans", sans-serif; }
-window { background: rgba(13,10,18,0.75); display:flex; align-items:center; justify-content:center; height:100vh; padding:12px; }
-box { display:flex; flex-direction:row; align-items:center; justify-content:center; gap:18px; padding:8px; width:min(1200px,96%); position:relative; }
+msg "Creando directorios de config..."
+mkdir -p \
+  "${HOME}/.config/hypr" \
+  "${HOME}/.config/waybar/scripts" \
+  "${HOME}/.config/alacritty" \
+  "${HOME}/.config/wlogout"
 
-/* evitar stretch */
-box > button { flex:0 0 auto; width:110px; height:110px; min-width:110px; min-height:110px; }
+msg "Copiando configs..."
+cp "${CONFIGS}/hypr/hyprland.conf"           "${HOME}/.config/hypr/hyprland.conf"
+cp "${CONFIGS}/waybar/config"                "${HOME}/.config/waybar/config"
+cp "${CONFIGS}/waybar/style.css"             "${HOME}/.config/waybar/style.css"
+cp "${CONFIGS}/waybar/scripts/battery.sh"    "${HOME}/.config/waybar/scripts/battery.sh"
+chmod +x "${HOME}/.config/waybar/scripts/battery.sh"
+cp "${CONFIGS}/alacritty/alacritty.toml"     "${HOME}/.config/alacritty/alacritty.toml"
+cp "${CONFIGS}/wlogout/layout"               "${HOME}/.config/wlogout/layout"
+cp "${CONFIGS}/wlogout/style.css"            "${HOME}/.config/wlogout/style.css"
 
-button {
-  background-color: #101419;
-  color: #93cee9;
-  background-repeat:no-repeat;
-  background-position:center 18px;
-  background-size:36px;
-  padding:8px 10px 10px 10px;
-  display:flex; flex-direction:column; justify-content:flex-end; align-items:center;
-  border-radius:8px;
-  transition: all 220ms ease;
-}
-
-/* ocultar lock y hibernate */
-#lock, #hibernate { display:none !important; }
-
-/* rutas absolutas: cambia 'tuusuario' por tu nombre */
-#logout { background-image: url("/home/tuusuario/.config/wlogout/icons/logout_blue.png"), url("/usr/share/wlogout/icons/logout.png"); }
-#shutdown { background-image: url("/home/tuusuario/.config/wlogout/icons/shutdown_blue.png"), url("/usr/share/wlogout/icons/shutdown.png"); }
-#reboot { background-image: url("/home/tuusuario/.config/wlogout/icons/reboot_blue.png"), url("/usr/share/wlogout/icons/reboot.png"); }
-
-/* pill central */
-#suspend {
-  width:140px; height:260px; padding-top:48px; padding-bottom:14px;
-  border-radius:36px; margin-left:-8px;
-  background-image: url("/home/tuusuario/.config/wlogout/icons/suspend_blue.png"), url("/usr/share/wlogout/icons/suspend.png");
-  background-position:center 48px; background-size:72px;
-  box-shadow: 0 24px 48px rgba(0,0,0,0.55); z-index:10;
-}
+msg "Configs copiados correctamente."
