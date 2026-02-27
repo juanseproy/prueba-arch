@@ -27,6 +27,7 @@ arch-install/
         │   ├── config
         │   └── style.css
         └── wlogout/
+            ├── config
             ├── layout
             └── style.css
 ```
