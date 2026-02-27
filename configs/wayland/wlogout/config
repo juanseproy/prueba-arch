@@ -6,28 +6,3 @@ halign = center
 valign = bottom
 fixed-width = 750
 fixed-height = 140
-
-[lock]
-action = hyprlock
-text = <span font_family="Font Awesome 6 Free Solid" size="24000"></span>\n<span size="12000">Lock</span>
-keybind = l
-
-[logout]
-action = hyprctl dispatch exit
-text = <span font_family="Font Awesome 6 Free Solid" size="24000"></span>\n<span size="12000">Logout</span>
-keybind = e
-
-[suspend]
-action = systemctl suspend
-text = <span font_family="Font Awesome 6 Free Solid" size="24000"></span>\n<span size="12000">Suspend</span>
-keybind = u
-
-[shutdown]
-action = systemctl poweroff
-text = <span font_family="Font Awesome 6 Free Solid" size="24000"></span>\n<span size="12000">Shutdown</span>
-keybind = s
-
-[reboot]
-action = systemctl reboot
-text = <span font_family="Font Awesome 6 Free Solid" size="24000"></span>\n<span size="12000">Reboot</span>
-keybind = r
