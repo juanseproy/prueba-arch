@@ -101,7 +101,7 @@ done
 # ─── Servicios ────────────────────────────────────────────────────────────────
 msg "Habilitando servicios del sistema..."
 sudo systemctl enable sddm
-sudo systemctl enable bluetooth
+sudo systemctl enable bluetooth.service
 
 # ─── Grupos del usuario ───────────────────────────────────────────────────────
 msg "Añadiendo ${REAL_USER} a grupos..."
